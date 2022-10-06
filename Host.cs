@@ -9,6 +9,8 @@ public class Host : MonoBehaviour
         Create, Idle, Roaming, Quest, Eat, Sleep, Exit
     }
     public STATE myState = default;
+    public CharacterStat stat;
+    public Vector3 Line;
 
     void ChangeState(STATE s)
     {
@@ -58,7 +60,27 @@ public class Host : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ChangeState(STATE.Create);
+        ChangeState(STATE.Roaming);
+        StartCoroutine(NPCMoving());
+        ChangeState(STATE.Idle);
+    }
+    IEnumerator NPCMoving()
+    {
+        Vector3 dir = Line - transform.position;
+        float dist = dir.magnitude;
+        dir.Normalize();
+        while (true)
+        {
+            float delta = stat.moveSpeed * Time.deltaTime;
+
+            if (delta > dist)
+            {
+                delta = dist;
+            }
+            transform.Translate(dir * delta, Space.World);
+            yield return null;
+        }
+
     }
 
     // Update is called once per frame
