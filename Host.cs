@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Host : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class Host : MonoBehaviour
     }
     public STATE myState = default;
     public CharacterStat stat;
-    public Vector3 Line;
+    public Transform Line;
 
     void ChangeState(STATE s)
     {
@@ -60,13 +61,18 @@ public class Host : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ChangeState(STATE.Roaming);
-        StartCoroutine(NPCMoving());
-        ChangeState(STATE.Idle);
+        int purpose = Random.Range(0,1);
+        switch (purpose)
+        {
+            case 0:
+                ChangeState(STATE.Roaming);
+                StartCoroutine(deskmoving());
+                break;
+        }
     }
-    IEnumerator NPCMoving()
+    IEnumerator deskmoving()
     {
-        Vector3 dir = Line - transform.position;
+        Vector3 dir = Line.position - transform.position;
         float dist = dir.magnitude;
         dir.Normalize();
         while (true)
@@ -77,6 +83,7 @@ public class Host : MonoBehaviour
             {
                 delta = dist;
             }
+            dist -= delta;
             transform.Translate(dir * delta, Space.World);
             yield return null;
         }
