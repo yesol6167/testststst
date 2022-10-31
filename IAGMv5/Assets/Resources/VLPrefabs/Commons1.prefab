@@ -1255,6 +1255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c57479586f3f784caccab0b5dbe1a20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LineChk: 0
   ADTYPE: 0
   Quest: {fileID: 0}
   spawnPoints: {fileID: 0}
@@ -1278,17 +1279,15 @@ MonoBehaviour:
   - {x: -21, y: 0, z: 4.3}
   - {x: -32.38, y: 0, z: 4.68}
   Exit: {fileID: 4462667327580000466, guid: 2c9b9938b5015044699511f5e3319ba8, type: 3}
+  purpose: 0
   gobed:
   - {x: 78.25, y: 0, z: -43.26}
   layerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 72
   myState: 1
   stat:
-    grade: 0
     moveSpeed: 20
-    rotSpeed: 360
-    money: 0
   Line: {fileID: 2103546092097468213, guid: fcbc13295724bd341810203ea7b54eae, type: 3}
 --- !u!54 &3136077860891756847
 Rigidbody:

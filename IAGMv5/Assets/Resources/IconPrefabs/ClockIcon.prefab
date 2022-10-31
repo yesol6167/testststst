@@ -260,6 +260,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8678209269502686931}
+        m_TargetAssemblyTypeName: ClockIcon, Assembly-CSharp
+        m_MethodName: OnQuestIcon
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5634181463182076220
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,6 +324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myNotouch: {fileID: 5634181465115234877}
+  myHost: {fileID: 0}
   myTarget: {fileID: 0}
   myButton: {fileID: 4434174416346014215}
   myTimeArea: {fileID: 2257537265558822270}

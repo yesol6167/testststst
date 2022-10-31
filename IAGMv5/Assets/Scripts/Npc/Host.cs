@@ -13,6 +13,8 @@ using UnityEngine.AI;
 
 public class Host : MonoBehaviour
 {
+    public bool LineChk = false; // 퇴장하는 Npc와 입장하는 Npc의 충돌시 시계아이콘 생성되는 오류 수정
+
     public int ADTYPE = 0; // ADTYPE으로 성별과 직업 구분, 스폰매니저에서 생성되고 ADNPC.cs에서 검사함 by주현
     public static Host inst = null;
 
@@ -87,30 +89,21 @@ public class Host : MonoBehaviour
                 agent.enabled = false;//네비메시 비활성화
                 agent1.enabled = true;//네비 옵스타클 활성화 //이걸로 가만히 있을때는 장애물되도록 바꿀꺼임
                 StopAllCoroutines(); // 모든 코루틴 멈추고 대기
-                switch (purpose)
-                {
-                    case 0:
-                        StartCoroutine(deskLine());
-                        break;
-                    case 1:
-                        //GetComponent<Animator>().SetBool("IsMoving", true);
-                        //agent.SetDestination(res);
-                        StartCoroutine(HostLine());
-                        break;
-                    case 2:
-                        StartCoroutine(HostLine());
-                        break;
-                }
+                StartCoroutine(deskLine());
                 //NpcClock의 생성
 
                 if (!Clockchk)
                 {
-                    IconArea = GameObject.Find("IconArea");
-                    objC = Instantiate(Resources.Load("IconPrefabs/ClockIcon"), IconArea.transform) as GameObject;
-                    myUIC = objC.GetComponent<ClockIcon>();
-                    myUIC.myTarget = myIconZone;
+                    if (LineChk == true)
+                    {
+                        IconArea = GameObject.Find("IconArea");
+                        objC = Instantiate(Resources.Load("IconPrefabs/ClockIcon"), IconArea.transform) as GameObject;
+                        myUIC = objC.GetComponent<ClockIcon>();
+                        myUIC.myTarget = myIconZone;
+                        myUIC.myHost = this.gameObject;
 
-                    Clockchk = true;
+                        Clockchk = true;
+                    }
                 }
 
                 break;
@@ -128,13 +121,13 @@ public class Host : MonoBehaviour
                     case 1:
                         GetComponent<Animator>().SetBool("IsMoving", true);
                         agent.SetDestination(res);
-                        StartCoroutine(HostLine());
+                        StartCoroutine(deskLine());
                         StartCoroutine(WalkTo(STATE.Eat));
                         break;
                     case 2:
                         GetComponent<Animator>().SetBool("IsMoving", true);
                         agent.SetDestination(inn);
-                        StartCoroutine(HostLine());
+                        StartCoroutine(deskLine());
                         StartCoroutine(WalkTo(STATE.Sleep)); //도착하면
                         break;
                 }
@@ -212,7 +205,6 @@ public class Host : MonoBehaviour
                 break;
         }
     }
-
     void StateProcess()
     {
         switch (myState)
@@ -220,17 +212,7 @@ public class Host : MonoBehaviour
             case STATE.Create:
                 break;
             case STATE.Idle:
-                if (myUIC.myTarget != null && myUIC == null && myUIC.TimeOut == false) // 시계를 제한 시간안에 누르면 퀘스트 아이콘 생성
-                {
-                    StartCoroutine(onQuestIcon());
-                    myUIC.myTarget = null;
-                }
-                else if (myUIC.myTarget != null && myUIC == null && myUIC.TimeOut == true) // 시계를 제한 시간안에 안누르면 불만 아이콘 생성
-                {
-                    StartCoroutine(onAngryIcon());
-                    myUIC.myTarget = null;
-                }
-                else if (onAngry == true) // 퀘스트를 거절하면 불만 아이콘 생성
+                if (onAngry == true) // 퀘스트를 거절하면 불만 아이콘 생성
                 {
                     StartCoroutine(onAngryIcon());
                     onAngry = false;
@@ -264,8 +246,6 @@ public class Host : MonoBehaviour
     }
     void Start()
     {
-        // 해당 위치에 있던 Npc의 방문 목적을 정해주는 명령어는 SpawnManger.cs로 옮기 -by주현
-
         ChangeState(STATE.Moving);
     }
     public void GoBed() //주문하고 침대로 이동
@@ -303,7 +283,7 @@ public class Host : MonoBehaviour
         StateProcess();
     }
 
-    IEnumerator deskLine()//레이어로 줄세우기
+    IEnumerator deskLine()// 줄세우기
     {
         while (true)
         {
@@ -312,8 +292,44 @@ public class Host : MonoBehaviour
                 Debug.DrawRay(transform.position, transform.forward * 10.0f, Color.black);
                 if (Physics.SphereCast(transform.position, 5.0f, transform.forward , out RaycastHit hitinfo, 5.0f, layerMask))
                 {
+                    if (hitinfo.collider.gameObject.layer == 6)
+                    {
+                        if (hitinfo.collider.GetComponent<Host>().LineChk == true) //  줄서있는 사람과 부딪쳤을 경우 
+                        {
+                            LineChk = true;
+                        }
+
+                    }
                     GetComponent<Animator>().SetBool("IsMoving", false);
+                    if(purpose == 1 || purpose == 2)
+                    {
+                        agent.velocity = Vector3.zero;
+                    }
                     ChangeState(STATE.Idle);
+                    /*
+                    switch(hitinfo.collider.gameObject.layer)
+                    {
+                        case 3: // 감지된 대상이 Staff인 경우
+                            GetComponent<Animator>().SetBool("IsMoving", false);
+                            ChangeState(STATE.Idle);
+                            break;
+                        case 6: // 감지된 대상이 Host인 경우
+                            if (hitinfo.collider.GetComponent<Host>().LineChk == true) //  줄서있는 사람과 부딪쳤을 경우 
+                            {
+                                GetComponent<Animator>().SetBool("IsMoving", false);
+                                ChangeState(STATE.Idle);
+                                LineChk = true;
+                            }
+                            else // 줄 서있지 않는 사람과 부딪쳤을 경우
+                            {
+                                GetComponent<Animator>().SetBool("IsMoving", false);
+                                ChangeState(STATE.Idle);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    */
                 }
                 else
                 {
@@ -329,8 +345,6 @@ public class Host : MonoBehaviour
         {
             if (!agent.pathPending)
             {
-                Debug.Log("1");
-                Debug.Log(agent != null);
                 if (agent.remainingDistance <= 1.0f)
                 {
                     agent.velocity = Vector3.zero;
@@ -404,8 +418,7 @@ public class Host : MonoBehaviour
             yield return null;
         }
     }
-
-    IEnumerator HostLine() //줄서기
+    /*IEnumerator HostLine() //줄서기
     {
 
         while (true)
@@ -423,7 +436,7 @@ public class Host : MonoBehaviour
             }
             yield return null;
         }
-    }
+    }*/
 
     IEnumerator onQuestIcon()
     {
@@ -475,30 +488,6 @@ public class Host : MonoBehaviour
     {
         myUIC.myNotouch.SetActive(false);
     }
-
-    /* 해당 함수를 TeleportPoint.cs로 옮김
-       옮긴 이유 : Npc가 생성되는 곳에 대기 줄이 너무 길어져 다른 Npc가 서있으면 오류가 발생함 
-    -> Npc 생성 위치에 콜라이더를 만들어 해당위치에 이미 생성된 Npc가 서 있을 경우를 감지하여 새로운 Npc의 생성을 막을 예정 
-    -> 하지만 Host.cs의 해당 온트리거 함수가 실행되어 오류가 발생하기에 새 콜라이더를 배치가 불가능
-
-    private void OnTriggerEnter(Collider obj)
-    {
-        if (!OnLine)
-        {
-            if (IsFinishQuest) // 완료상태에서 트리거에 닿으면 파괴 카운트 삭제
-            {
-                Destroy(gameObject);
-                SpawnManager.Instance.hostCount--;
-            }
-            else
-            {
-                StartCoroutine(FinishQuest(3.0f)); //퀘스트 완료 시간
-            }
-        }
-        else { IsQuest = true; }
-    }
-    */
-
     public void GoExit() //먹는상태에서 나가는 상태로
     {
         ChangeState(STATE.Exit);
@@ -508,5 +497,15 @@ public class Host : MonoBehaviour
     public void StartFinishQuest()
     {
         StartCoroutine(FinishQuest(3.0f));
+    }
+
+    public void StartCoQi() // = StartCoroutineQuestIcon
+    {
+        StartCoroutine(onQuestIcon());
+    }
+
+    public void StartCoAi() // = StartCoroutineAngryIcon
+    {
+        StartCoroutine(onAngryIcon());
     }
 }

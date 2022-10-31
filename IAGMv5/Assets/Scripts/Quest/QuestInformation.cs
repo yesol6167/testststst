@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class QuestInformation : MonoBehaviour
+public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트 요청서와 같이 사용됨
 {
     public GameObject ParentOBJ;
     public GameObject ChildOBJ;
@@ -29,6 +29,7 @@ public class QuestInformation : MonoBehaviour
         QuestWindowArea = GameObject.Find("QuestWindowArea");
         //UI매니저
         ParentOBJ = GameObject.Find("SpawnPointQ");
+
         /*
         switch (this.gameObject.GetComponent<Host>().purpose)
         {
@@ -43,6 +44,7 @@ public class QuestInformation : MonoBehaviour
                 break;
         }
         */
+
         ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
 
         NewsBArea = GameObject.Find("NewsBArea");

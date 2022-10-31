@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,8 +9,14 @@ using static UnityEditor.PlayerSettings;
 
 public class ClockIcon : MonoBehaviour
 {
+    delegate void Delegate();
+
+    Delegate deQuestIcon;
+    Delegate deAngryIcon;
+
     public GameObject myNotouch;
 
+    public GameObject myHost;
     public Transform myTarget;
     public Button myButton;
 
@@ -22,6 +29,9 @@ public class ClockIcon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        deQuestIcon = myHost.GetComponent<Host>().StartCoQi;
+        deAngryIcon = myHost.GetComponent<Host>().StartCoAi;
+
         StartCoroutine(TimeChecking());
     }
     // Update is called once per frame
@@ -40,7 +50,8 @@ public class ClockIcon : MonoBehaviour
             if (myTimeArea.fillAmount == 1.0f)
             {
                 TimeOut = true;
-                OnRemveClock();
+                deAngryIcon();
+                Destroy(this.gameObject);
             }
             yield return null;
         }
@@ -48,5 +59,9 @@ public class ClockIcon : MonoBehaviour
     public void OnRemveClock()
     {
         Destroy(gameObject);
+    }
+    public void OnQuestIcon()
+    {
+        deQuestIcon();
     }
 }

@@ -29,8 +29,15 @@ public class FirstCheckZone : MonoBehaviour
                  myTarget = other.gameObject; // ≈∏∞Ÿ¿ª πﬂ∞ﬂ«ﬂ¿ª∂ß «ÿ¥Á ≈∏∞Ÿ¿∫ ∏∂¿Ã ≈∏∞Ÿ¿Ã µ 
                  StartCoroutine(CheckClock());
             }
+            myTarget.GetComponent<Host>().LineChk = true;
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        other.gameObject.GetComponent<Host>().LineChk = false;
+    }
+
     IEnumerator CheckClock()
     {
         while (true)
