@@ -16,11 +16,12 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
     public TMP_Text info;
     public TMP_Text reward;
     public TMP_Text Result;
-    string result;
+    //string result;
     bool chk; // 성공 실패 여부 체크
     public GameObject myNpc; // 퀘스트를 준 npc
     public int People;
     public bool IsQuestchk;
+    public bool NpcChk = true; // 해당 스크립트가 바인딩 되어있는 오브젝트가 모험가인지 아니면 Ui프리팹 인지 구분 (false=요청서/true=모험가)
 
     GameObject QuestWindowArea; // AdDataWindow가 자식으로 생성되는 UiCanvas안의 부모 오브젝트
 
@@ -28,24 +29,19 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
     {
         QuestWindowArea = GameObject.Find("QuestWindowArea");
         //UI매니저
-        ParentOBJ = GameObject.Find("SpawnPointQ");
-
-        /*
-        switch (this.gameObject.GetComponent<Host>().purpose)
+        if(NpcChk == false) // Ui프리팹일 경우
         {
-            case 0:
-                ParentOBJ = GameObject.Find("SpawnPointQ");
-                break;
-            case 1:
-                ParentOBJ = GameObject.Find("SpawnPointP");
-                break;
-            case 2:
-                ParentOBJ = GameObject.Find("SpawnPointM");
-                break;
+            ParentOBJ = GameObject.Find("SpawnPointQ");
+            ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
         }
-        */
-
-        ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+        else // 모험가일 경우
+        {
+            if(this.gameObject.GetComponent<Host>().purpose == 0) // 방문목적이 로비인 경우
+            {
+                ParentOBJ = GameObject.Find("SpawnPointQ");
+                ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+            }
+        }
 
         NewsBArea = GameObject.Find("NewsBArea");
     }
@@ -79,17 +75,14 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
 
     public void AddQuest() // 승낙
     {
-        if (People == 0)
+        if (People == 0) // 마을사람
         {
-            //마을사람
             QuestManager.Instance.PostedQuest(myQuest);
         }
-        else
+        else // 모험가
         {
-            //'로비를 이용하는' 모험가 // 현재 펍이나 모텔을 이용하는 모험가도 퀘스트를 가져감 -> 수정 필요
             QuestManager.Instance.ProgressQuest(myQuest, ChildOBJ);
         }
-        
         ChildOBJ.GetComponent<Host>().onSmile = true;
     }
 

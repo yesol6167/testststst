@@ -69,8 +69,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD018\uC2A4\uD2B8 \uBAA9\uB85D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 33ad546d0d9169647b3172ac10c7cd1c, type: 2}
-  m_sharedMaterial: {fileID: -1414159223325598162, guid: 33ad546d0d9169647b3172ac10c7cd1c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 976c1a03e7f4e4743a203d40f1bfa0e3, type: 2}
+  m_sharedMaterial: {fileID: -5356459956896829296, guid: 976c1a03e7f4e4743a203d40f1bfa0e3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -150,16 +150,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParentOBJ: {fileID: 0}
   ChildOBJ: {fileID: 0}
+  NewsBArea: {fileID: 0}
   myQuest:
     QuestName: 
     Questgrade: 0
     Information: 
   Questname: {fileID: 591281890640150074}
   grade: {fileID: 0}
-  name: {fileID: 0}
+  Name: {fileID: 0}
   info: {fileID: 0}
   reward: {fileID: 0}
+  Result: {fileID: 0}
   myNpc: {fileID: 0}
+  People: 0
+  IsQuestchk: 0
+  NpcChk: 0
 --- !u!1 &591281891371466823
 GameObject:
   m_ObjectHideFlags: 0

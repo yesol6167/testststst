@@ -118,16 +118,30 @@ public class SpawnManager : Singleton<SpawnManager>
                     hcount--; // ? 주현 : 해당 명령어는 왜 있는가?
                 }
                 Host.GetComponent<Host>().hostchk = false; // = 해당 캐릭터는 모험가이다
+                //Host.GetComponent<QuestInformation>().NpcChk = true;
             }
             Host.GetComponent<Host>().People = Nnum;
         }
-        else // 마을사람이 없으면 모험가 스폰 불가 -> 처음에는 마을사람이 생성 됨
+        else // if(hcount = 0) 현재 길드내에 마을사람이 없으면(처음에) 모험가(방문목적:모텔/여관)와 마을사람이 50:50의 확률로 생성됨
         {
-            GameObject Host = Instantiate(VL[VLnum], spawnPoints[0]) as GameObject; // 생성될때 VLnum를 확률에 따라 조정
-            Host.GetComponent<VLNpc>().job = vl.NpcJob;
-            Host.GetComponent<Host>().hostchk = true; // = 해당 캐릭터는 마을사람이다
-            Host.GetComponent<Host>().purpose = 0; // = 방문 구역이 로비이다
-            Host.GetComponent<Host>().People = 0;
+            int Num = UnityEngine.Random.Range(0, 2);
+            switch(Num)
+            {
+                case 0: // 마을사람
+                    GameObject Host = Instantiate(VL[VLnum], spawnPoints[0]) as GameObject; // 생성될때 VLnum를 확률에 따라 조정
+                    Host.GetComponent<VLNpc>().job = vl.NpcJob;
+                    Host.GetComponent<Host>().hostchk = true; // = 해당 캐릭터는 마을사람이다
+                    Host.GetComponent<Host>().purpose = 0; // = 방문 구역이 로비이다
+                    Host.GetComponent<Host>().People = 0;
+                    break;
+                case 1: // 모험가
+                    int Purpose = Random.Range(1, 3); // 방문 목적이 펍(1) 또는 모텔(2)
+                    Host = Instantiate(AD[ADnum], spawnPoints[Purpose]) as GameObject;
+                    Host.GetComponent<Host>().purpose = Purpose; // = 방문 구역이 로비(0)/펍(1)/모텔(2) 중에서 랜덤으로 주어진다.
+                    Host.GetComponent<Host>().hostchk = false; // = 해당 캐릭터는 모험가이다
+                    //Host.GetComponent<QuestInformation>().NpcChk = true;
+                    break;
+            }
         }
     }
     public void Teleport(GameObject host)

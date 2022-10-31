@@ -148,6 +148,7 @@ MonoBehaviour:
   myNpc: {fileID: 0}
   People: 0
   IsQuestchk: 0
+  NpcChk: 0
 --- !u!1 &1972570239450666479
 GameObject:
   m_ObjectHideFlags: 0
