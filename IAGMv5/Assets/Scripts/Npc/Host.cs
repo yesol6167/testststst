@@ -14,8 +14,6 @@ using UnityEngine.AI;
 public class Host : MonoBehaviour
 {
     public bool LineChk = false; // 퇴장하는 Npc와 입장하는 Npc의 충돌시 시계아이콘 생성되는 오류 수정
-
-    public int ADTYPE = 0; // ADTYPE으로 성별과 직업 구분, 스폰매니저에서 생성되고 ADNPC.cs에서 검사함 by주현
     public static Host inst = null;
 
     public GameObject Quest; // 프리팹 둘은 연결 >> 퀘스트 완료 >> 완료되었으면 quest 프리팹을 파괴

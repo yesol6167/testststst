@@ -117,6 +117,7 @@ public class SpawnManager : Singleton<SpawnManager>
                     Destroy(QuestManager.Instance.RQuest.transform.GetChild(j).gameObject); // RQ프리팹 삭제
                     hcount--; // ? 주현 : 해당 명령어는 왜 있는가?
                 }
+                Host.GetComponent<ADNpc>().adtype = ADnum;
                 Host.GetComponent<Host>().hostchk = false; // = 해당 캐릭터는 모험가이다
                 //Host.GetComponent<QuestInformation>().NpcChk = true;
             }
@@ -137,6 +138,7 @@ public class SpawnManager : Singleton<SpawnManager>
                 case 1: // 모험가
                     int Purpose = Random.Range(1, 3); // 방문 목적이 펍(1) 또는 모텔(2)
                     Host = Instantiate(AD[ADnum], spawnPoints[Purpose]) as GameObject;
+                    Host.GetComponent<ADNpc>().adtype = ADnum;
                     Host.GetComponent<Host>().purpose = Purpose; // = 방문 구역이 로비(0)/펍(1)/모텔(2) 중에서 랜덤으로 주어진다.
                     Host.GetComponent<Host>().hostchk = false; // = 해당 캐릭터는 모험가이다
                     //Host.GetComponent<QuestInformation>().NpcChk = true;

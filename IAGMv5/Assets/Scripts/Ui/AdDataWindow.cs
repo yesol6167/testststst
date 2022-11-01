@@ -16,12 +16,12 @@ public class AdDataWindow : MonoBehaviour
 
     private void Start()
     {
-        GameObject obj = GameObject.Find("SpawnPoint1");
+        GameObject obj = GameObject.Find("SpawnPointQ");
         myADNpc = obj.transform.GetChild(0).gameObject; // 스폰포인트의 첫번째 자식 오브제가 나의 모험가
 
         CharState.NPC adStat = myADNpc.GetComponent<ADNpc>().myStat;
 
-        //ProfileImage.sprite = adStat.profile;
+        ProfileImage.sprite = adStat.profile;
         Text[0].text = "이름: " + adStat.name;
         Text[1].text = "직업: " + adStat.npcJob.ToString();
         Text[2].text = adStat.charGrade.ToString();

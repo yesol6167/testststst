@@ -19,10 +19,10 @@ public class ADNpc : MonoBehaviour
     public static ADNPC RandomNPC(int a, Sprite[] np)
     {
         ADNPC adnpc = new ADNPC();
+        adnpc.myStatInfo.profile = np[a]; // 프로필 이미지는 변수 a에 따라 바뀌므로 해당 문장으로 통일
         switch (a) // 수정전 n by주현
         {
             case 0: // 여자 궁수
-                adnpc.myStatInfo.profile = np[0];
                 adnpc.myStatInfo.name = "셀리나";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.ACHER;
                 adnpc.myStatInfo.charGrade = Grade(adnpc); // 궁수 공격력
@@ -35,7 +35,6 @@ public class ADNpc : MonoBehaviour
                 adnpc.myStatInfo.dexterity = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩 증가
                 break;
             case 1: // 여자 도적
-                adnpc.myStatInfo.profile = np[1];
                 adnpc.myStatInfo.name = "사나";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.THIEF;
                 adnpc.myStatInfo.charGrade = Grade(adnpc);
@@ -48,7 +47,6 @@ public class ADNpc : MonoBehaviour
                 adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
                 break;
             case 2: // 여자 마법사
-                adnpc.myStatInfo.profile = np[2];
                 adnpc.myStatInfo.name = "코리나";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.WIZARD;
                 adnpc.myStatInfo.charGrade = Grade(adnpc);
@@ -61,7 +59,6 @@ public class ADNpc : MonoBehaviour
                 adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
                 break;
             case 3: // 남자 궁수
-                adnpc.myStatInfo.profile = np[3];
                 adnpc.myStatInfo.name = "브리오";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.ACHER;
                 adnpc.myStatInfo.charGrade = Grade(adnpc);
@@ -74,7 +71,6 @@ public class ADNpc : MonoBehaviour
                 adnpc.myStatInfo.dexterity = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩 증가
                 break;
             case 4: // 남자 도적
-                adnpc.myStatInfo.profile = np[4];
                 adnpc.myStatInfo.name = "단테";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.THIEF;
                 adnpc.myStatInfo.charGrade = Grade(adnpc);
@@ -87,7 +83,7 @@ public class ADNpc : MonoBehaviour
                 adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
                 break;
             case 5: // 남자 마법사
-                adnpc.myStatInfo.profile = np[5];
+                //adnpc.myStatInfo.profile = np[5];
                 adnpc.myStatInfo.name = "클락";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.WIZARD;
                 adnpc.myStatInfo.charGrade = Grade(adnpc);
@@ -100,7 +96,6 @@ public class ADNpc : MonoBehaviour
                 adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
                 break;
             case 6: // 남자 전사
-                adnpc.myStatInfo.profile = np[6];
                 adnpc.myStatInfo.name = "레오";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.WARRIOR;
                 adnpc.myStatInfo.charGrade = Grade(adnpc);
@@ -115,14 +110,9 @@ public class ADNpc : MonoBehaviour
         }
         return adnpc;
     }
-    private void Awake()
-    {
-        NpcProfiles = Resources.LoadAll<Sprite>("Images/ProfileImages");
-    }
     void Start()
     {
-        adtype = this.gameObject.GetComponent<Host>().ADTYPE;
-
+        NpcProfiles = Resources.LoadAll<Sprite>("Images/ProfileImages");
         myStat = RandomNPC(adtype, NpcProfiles).myStatInfo; // 스타트에서 캐릭터에서 스탯이 주어짐
     }
 
