@@ -9,10 +9,13 @@ using static UnityEditor.PlayerSettings;
 
 public class ClockIcon : MonoBehaviour
 {
-    delegate void Delegate();
+    delegate void Delegate(); // 기본 함수 대행 
+    delegate void DelegateS(string IconName); // 문자열 함수 대행
 
     Delegate deQuestIcon;
     Delegate deAngryIcon;
+    Delegate deStaffIcon;
+    DelegateS deMandBIcon;
 
     public GameObject myNotouch;
 
@@ -31,6 +34,7 @@ public class ClockIcon : MonoBehaviour
     {
         deQuestIcon = myHost.GetComponent<Host>().StartCoQi;
         deAngryIcon = myHost.GetComponent<Host>().StartCoAi;
+        deMandBIcon = myHost.GetComponent<Host>().StartCoMandB;
 
         StartCoroutine(TimeChecking());
     }
@@ -60,8 +64,25 @@ public class ClockIcon : MonoBehaviour
     {
         Destroy(gameObject);
     }
-    public void OnQuestIcon()
+    public void OnIcon() 
     {
-        deQuestIcon();
+        switch(myHost.GetComponent<Host>().purpose)
+        {
+            case 0: // 방문 목적이 로비일때
+                deQuestIcon();
+                break;
+            case 1: // 방문 목적이 식당일때
+                deMandBIcon("MealIcon");
+                break;
+            case 2: // 방문 목적이 여관일때
+                deMandBIcon("BedIcon");
+                break;
+        }
+    }
+    public void OnStaffSmile()
+    {
+        Debug.Log(myHost.GetComponent<Host>().myStaff);
+        deStaffIcon = myHost.GetComponent<Host>().myStaff.GetComponent<Staff>().OnSmileIcon;
+        deStaffIcon();
     }
 }

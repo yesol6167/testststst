@@ -37,7 +37,7 @@ public class VLNpc : MonoBehaviour
     {
         //마을사람 F~D 귀족 C~B 왕족 A 퀘스트 스폰매니저랑 연동시키기
         //배열 세팅
-        Quest.QuestGRADE[] C_RandomSet = new Quest.QuestGRADE[] { Quest.QuestGRADE.D, Quest.QuestGRADE.E, Quest.QuestGRADE.F };
+        Quest.QuestGRADE[] C_RandomSet = new Quest.QuestGRADE[] { Quest.QuestGRADE.F, Quest.QuestGRADE.E, Quest.QuestGRADE.D };
         Quest.QuestGRADE[] N_RandomSet = new Quest.QuestGRADE[] { Quest.QuestGRADE.C, Quest.QuestGRADE.B };
         Quest.QuestGRADE[] R_RandomSet = new Quest.QuestGRADE[] { Quest.QuestGRADE.A };
 

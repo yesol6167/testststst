@@ -7,12 +7,7 @@ using UnityEngine.UIElements;
 public class FirstCheckZone : MonoBehaviour
 {
     public LayerMask HostMask = default;
-    GameObject myTarget = null;    
-
-    void Update()
-    {
-
-    }
+    GameObject myTarget = null;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -47,8 +42,6 @@ public class FirstCheckZone : MonoBehaviour
                 if (myTarget.GetComponent<Host>().objC != null) // Npc의 아이콘 오브젝트가 널이 아닐 때 = 시계가 있다면
                 {
                     RemoveNotouch(); // 노터치가 비활성화되고 시계가 터치 가능해짐
-
-                    //StopCoroutine(CheckClock());
                 }
             }
             yield return null;

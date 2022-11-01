@@ -26,6 +26,7 @@ public class Host : MonoBehaviour
     public Transform OutPoint;
     //public GameObject obj = null;
     public GameObject objC = null;
+    public GameObject myStaff;
 
     GameObject IconArea = null;
     public bool hostchk; // 마을사람과 모험가 구분용
@@ -80,6 +81,7 @@ public class Host : MonoBehaviour
             case STATE.Create:
                 break;
             case STATE.Idle: // 로비데스크로 와서 아이들상태 돌입
+                StaffCheck();
                 agent.enabled = false;//네비메시 비활성화
                 agent1.enabled = true;//네비 옵스타클 활성화 //이걸로 가만히 있을때는 장애물되도록 바꿀꺼임
                 StopAllCoroutines(); // 모든 코루틴 멈추고 대기
@@ -129,11 +131,22 @@ public class Host : MonoBehaviour
                 StartCoroutine(deskmoving());
                 break;
             case STATE.Eat:
+                StaffCheck();
                 transform.rotation = Quaternion.Euler(0, 180, 0);
                 StopAllCoroutines();
                 GetComponent<Animator>().SetBool("IsMoving", false);
                 IconArea = GameObject.Find("IconArea");
-                OnIcon("MealIcon");
+
+                if (!Clockchk)
+                {
+                        IconArea = GameObject.Find("IconArea");
+                        objC = Instantiate(Resources.Load("IconPrefabs/ClockIcon"), IconArea.transform) as GameObject;
+                        objC.GetComponent<ClockIcon>().myTarget = myIconZone;
+                        objC.GetComponent<ClockIcon>().myHost = this.gameObject;
+                        Clockchk = true;
+                }
+
+                //OnIcon("MealIcon");
                 break;
             case STATE.Eating:
                 StopAllCoroutines();
@@ -142,11 +155,21 @@ public class Host : MonoBehaviour
                 //Invoke("SeatToWalk",11);
                 break;
             case STATE.Sleep:
+                StaffCheck();
                 transform.rotation = Quaternion.Euler(0, 180, 0);
                 StopAllCoroutines();
                 GetComponent<Animator>().SetBool("IsMoving", false);
                 IconArea = GameObject.Find("IconArea");
-                OnIcon("BedIcon");
+
+                if (!Clockchk)
+                {
+                        IconArea = GameObject.Find("IconArea");
+                        objC = Instantiate(Resources.Load("IconPrefabs/ClockIcon"), IconArea.transform) as GameObject;
+                        objC.GetComponent<ClockIcon>().myTarget = myIconZone;
+                        objC.GetComponent<ClockIcon>().myHost = this.gameObject;
+                        Clockchk = true;
+                }
+                //OnIcon("BedIcon");
                 break;
 
             case STATE.Sleeping:
@@ -364,8 +387,6 @@ public class Host : MonoBehaviour
             {
                 if (agent.remainingDistance == 0)//남은거리가0이면
                 {
-                    Debug.Log("2");
-                    Debug.Log(agent != null);
                     agent.velocity = Vector3.zero;
                     ChangeState(HostState);
                     agent.ResetPath();
@@ -403,12 +424,19 @@ public class Host : MonoBehaviour
         if (hostchk)
         {
             IsFinishQuest = true;
-            
         }
         StopCoroutine(deskLine());
         IsQuest = false;
         ChangeState(STATE.Exit);
     }
+
+    IEnumerator onMandBIcon(string IconName) // 식사 & 침대 아이콘
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        OnIcon(IconName);
+    }
+
     IEnumerator FinishQuest(float t) //퀘스트 존에 가서 퀘스트를 하도록
     {
         yield return new WaitForSeconds(t);
@@ -439,9 +467,15 @@ public class Host : MonoBehaviour
         StartCoroutine(onAngryIcon());
     }
 
+    public void StartCoMandB(string IconName)
+    {
+        StartCoroutine(onMandBIcon(IconName));
+    }
+
     public void OnIcon(string IconName)
     {
         GameObject Obj = Instantiate(Resources.Load($"IconPrefabs/{IconName}"), IconArea.transform) as GameObject;
+
         switch (IconName)
         {
             case "SmileIcon":
@@ -461,6 +495,13 @@ public class Host : MonoBehaviour
                 Obj.GetComponent<MealIcon>().myTarget = myIconZone;
                 Obj.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(GoTable);
                 break;
+        }
+    }
+    public void StaffCheck()
+    {
+        if (Physics.SphereCast(transform.position, 7.0f, transform.forward, out RaycastHit hitinfo, 7.0f, layerMask))
+        {
+            myStaff = hitinfo.collider.gameObject;
         }
     }
 }
