@@ -369,7 +369,6 @@
 "Assets/Scripts/Npc/CharState.cs"
 "Assets/Scripts/Npc/Host.cs"
 "Assets/Scripts/Npc/Staff.cs"
-"Assets/Scripts/Npc/StaffLobby.cs"
 "Assets/Scripts/Npc/VLNpc.cs"
 "Assets/Scripts/NpcCreate.cs"
 "Assets/Scripts/Quest/Quest.cs"
