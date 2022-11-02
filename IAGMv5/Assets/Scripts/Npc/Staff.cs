@@ -12,6 +12,6 @@ public class Staff : MonoBehaviour
     {
         // 스마일 생성
         GameObject obj = Instantiate(Resources.Load("IconPrefabs/SmileIcon"), myIconArea.transform) as GameObject;
-        obj.GetComponent<SmileIcon>().myTarget = myIconZone; // 해당구역의 스태프가 스마일 아이콘을 생성한다.
+        obj.GetComponent<MoodIcon>().myIconZone = myIconZone; // 해당구역의 스태프가 스마일 아이콘을 생성한다.
     }
 }

@@ -45,7 +45,6 @@ public class VLNpc : MonoBehaviour
         int n = UnityEngine.Random.Range(0, 2);
 
         Qnpc.NpcJob = job;
-        Debug.Log(Qnpc.NpcJob);
         switch (Qnpc.NpcJob) // 신분에 따라 케이스가 나뉘어짐
         {
             case VLNpc.NPCJOB.COMMONS:
