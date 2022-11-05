@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Diagnostics;
 
 public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트 요청서와 같이 사용됨
 {
@@ -82,6 +83,7 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
         else // 모험가
         {
             QuestManager.Instance.ProgressQuest(myQuest, ChildOBJ);
+            ChildOBJ.GetComponent<Host>().Questing = true;
         }
         ChildOBJ.GetComponent<Host>().onSmile = true;
     }
@@ -97,18 +99,27 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
     }
     public void AddReward()
     {
+        ChildOBJ.GetComponent<Host>().Questing = false;
         Destroy(ChildOBJ.GetComponent<Host>().Quest.gameObject);
         QuestManager.Instance.EndQuest(myQuest);
         if (chk)
         { // 성공시 증가 연산
             GameManager.Instance.Gold += myQuest.rewardgold;
             GameManager.Instance.Fame += myQuest.rewardfame;
+            UIManager.Instance.GoldiIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{myQuest.rewardgold}"; //GoldiIncrease
+            UIManager.Instance.ChangeGold = true;
+            UIManager.Instance.FameIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{myQuest.rewardfame}"; //FameiIncrease
+            UIManager.Instance.ChangeFame = true;
             ChildOBJ.GetComponent<Host>().onSmile = true;
         }
         else
         { // 실패시 감소 연산
             GameManager.Instance.Gold -= myQuest.rewardgold;
             GameManager.Instance.Fame -= myQuest.rewardfame;
+            UIManager.Instance.GoldiIncrease.GetComponent<TMP_Text>().text = $"<color=blue>+{myQuest.rewardgold}"; //GoldiIncrease
+            UIManager.Instance.ChangeGold = true;
+            UIManager.Instance.FameIncrease.GetComponent<TMP_Text>().text = $"<color=blue>+{myQuest.rewardfame}"; //FameiIncrease
+            UIManager.Instance.ChangeFame = true;
             ChildOBJ.GetComponent<Host>().onAngry = true;
         }
         //현재 퀘스트 리스트를 완료 퀘스트 리스트에 추가

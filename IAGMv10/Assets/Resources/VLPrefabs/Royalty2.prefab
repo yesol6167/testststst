@@ -1894,7 +1894,6 @@ GameObject:
   - component: {fileID: -7711356082930139383}
   - component: {fileID: -4160630401030342573}
   - component: {fileID: 6161826910351322612}
-  - component: {fileID: -6141445051766922217}
   m_Layer: 6
   m_Name: Royalty2
   m_TagString: Untagged
@@ -1986,20 +1985,19 @@ MonoBehaviour:
   spawnPoints: {fileID: 0}
   myIconZone: {fileID: 493531545242095395}
   OutPoint: {fileID: 6193417168652664371, guid: 09e6d1abca4268442aa62c5fb9fdadb2, type: 3}
-  objC: {fileID: 0}
   myStaff: {fileID: 0}
-  hostchk: 0
-  Firstchk: 0
-  IsFinishQuest: 0
+  IconArea: {fileID: 0}
+  VLchk: 0
+  IsFinishQuest: 1
   exitchk: 0
-  OnLine: 0
   Clockchk: 0
   IsQuest: 0
   onAngry: 0
   onSmile: 0
   People: 0
-  res: {x: -25.8, y: 0, z: -21.5}
-  inn: {x: 41.5, y: 0, z: -23.4}
+  lob: {x: 10, y: 0, z: -21}
+  res: {x: 0, y: 0, z: 0}
+  mot: {x: 0, y: 0, z: 0}
   Exit: {fileID: 4462667327580000466, guid: 2c9b9938b5015044699511f5e3319ba8, type: 3}
   purpose: 0
   layerMask:
@@ -2008,7 +2006,6 @@ MonoBehaviour:
   myState: 1
   stat:
     moveSpeed: 20
-  Line: {fileID: 2103546092097468213, guid: fcbc13295724bd341810203ea7b54eae, type: 3}
 --- !u!54 &-7711356082930139383
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2060,23 +2057,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!208 &-6141445051766922217
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 272350658327657950}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Shape: 0
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
+  m_ObstacleAvoidanceType: 0
 --- !u!1 &272350658327661320
 GameObject:
   m_ObjectHideFlags: 0

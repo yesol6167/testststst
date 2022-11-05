@@ -4,11 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
+using TMPro;
+using static System.Net.Mime.MediaTypeNames;
 
 public class PubMotelIcon : MonoBehaviour // Bed + Meat + Sleep + Eat 아이콘
 {
     public Transform myIconZone;
     public GameObject myHost;
+    public int Price = 100; // 가격
+    TMP_Text text;
 
     // Chair&Bed Check
     ChairBedChk bedchairvalue;
@@ -22,7 +26,13 @@ public class PubMotelIcon : MonoBehaviour // Bed + Meat + Sleep + Eat 아이콘
     public void delete()
     {
         Destroy(gameObject);
-        GameManager.Instance.Gold += 100;
+    }
+
+    public void AddGold()
+    {
+        GameManager.Instance.Gold += Price;
+        UIManager.Instance.GoldiIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{Price}";
+        UIManager.Instance.ChangeGold = true;
     }
 
     public void ChairChk()

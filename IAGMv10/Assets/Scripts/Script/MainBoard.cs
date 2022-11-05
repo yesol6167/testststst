@@ -7,8 +7,9 @@ using UnityEngine.UI;
 
 public class MainBoard : MonoBehaviour
 {
-    public GameObject MenuBoard;
-    public Image OpenBook;
+    public GameObject[] MenuBoard;
+    public Sprite myCloseBook;
+    public Sprite myOpenBook;
     public Button MenuButton;
     bool Active = false;
 
@@ -16,21 +17,28 @@ public class MainBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MenuBoard.SetActive(Active);
+        gameObject.GetComponent<Image>().sprite = myCloseBook;
+        for(int i = 0; i < MenuBoard.Length; i++)
+        {
+            MenuBoard[i].SetActive(Active);
+        }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void OnAction()
     {
-        MenuBoard.SetActive(!Active);
+        for (int i = 0; i < MenuBoard.Length; i++)
+        {
+            MenuBoard[i].SetActive(!Active);
+        }
         Active = !Active;
 
+        if(Active)
+        {
+            gameObject.GetComponent<Image>().sprite = myOpenBook;
+        }
+        else 
+        {
+            gameObject.GetComponent<Image>().sprite = myCloseBook;
+        }
     }
- 
   }
    

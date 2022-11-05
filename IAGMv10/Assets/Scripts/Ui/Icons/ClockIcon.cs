@@ -10,38 +10,31 @@ using static UnityEditor.PlayerSettings;
 public class ClockIcon : MonoBehaviour
 {
     delegate void Delegate(); // 기본 함수 대행 
-    delegate void DelegateS(string IconName); // 문자열 함수 대행
+    delegate void DelegateS(string IconName,float WaitSeconds); // 문자열 함수 대행
 
-    Delegate deQuestIcon;
-    Delegate deAngryIcon;
     Delegate deStaffIcon;
-    DelegateS deMandBIcon;
+    DelegateS deHostIcon;
 
     public GameObject myNotouch;
 
     public GameObject myHost;
-    public Transform myTarget;
+    public Transform myIconZone;
     public Button myButton;
 
     public Image myTimeArea;
     public float LimitTime = 30.0f; // 제한시간 30초
 
-    public bool TimeOut = false;
-    public GameObject myAngryIcon;
-
     // Start is called before the first frame update
     void Start()
     {
-        deQuestIcon = myHost.GetComponent<Host>().StartCoQi;
-        deAngryIcon = myHost.GetComponent<Host>().StartCoAi;
-        deMandBIcon = myHost.GetComponent<Host>().StartCoMandB;
+        deHostIcon = myHost.GetComponent<Host>().CorourineIcon;
 
         StartCoroutine(TimeChecking());
     }
     // Update is called once per frame
     void Update()
     {
-        Vector3 pos = Camera.main.WorldToScreenPoint(myTarget.position);
+        Vector3 pos = Camera.main.WorldToScreenPoint(myIconZone.position);
         transform.position = pos;
     }
     IEnumerator TimeChecking()
@@ -53,9 +46,7 @@ public class ClockIcon : MonoBehaviour
             myTimeArea.fillAmount += speed * Time.deltaTime;
             if (myTimeArea.fillAmount == 1.0f)
             {
-                TimeOut = true;
                 myHost.GetComponent<Host>().onAngry = true;
-                deAngryIcon();
                 Destroy(this.gameObject);
             }
             yield return null;
@@ -70,13 +61,13 @@ public class ClockIcon : MonoBehaviour
         switch(myHost.GetComponent<Host>().purpose)
         {
             case 0: // 방문 목적이 로비일때
-                deQuestIcon();
+                deHostIcon("QuestIcon",1.0f);
                 break;
             case 1: // 방문 목적이 식당일때
-                deMandBIcon("MeatIcon");
+                deHostIcon("MeatIcon",1.0f);
                 break;
             case 2: // 방문 목적이 여관일때
-                deMandBIcon("BedIcon");
+                deHostIcon("BedIcon",1.0f);
                 break;
         }
     }

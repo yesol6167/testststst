@@ -10,6 +10,9 @@ using System.Threading;
 using UnityEngine.UI;
 using System.Security.Authentication.ExtendedProtection;
 using UnityEngine.AI;
+using Unity.VisualScripting.FullSerializer;
+using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 
 public class Host : MonoBehaviour
 {
@@ -24,16 +27,12 @@ public class Host : MonoBehaviour
     public Transform spawnPoints;
     public Transform myIconZone;
     public Transform OutPoint;
-    //public GameObject obj = null;
-    public GameObject objC = null;
     public GameObject myStaff;
 
-    GameObject IconArea = null;
-    public bool hostchk; // 마을사람과 모험가 구분용
-    public bool Firstchk = false;
-    public bool IsFinishQuest = false; // 퀘스트 완료 여부 >> 나가면 사라짐
+    public GameObject IconArea = null;
+    public bool VLchk; // 마을사람과 모험가 구분용
+    public bool Questing = false; // 현재 퀘스트 진행중 = 재방문 해야하는 Npc
     public bool exitchk = false;
-    public bool OnLine = false;
     public bool Clockchk = false;
     public bool IsQuest = false;
     int count; //배열 체크
@@ -42,33 +41,25 @@ public class Host : MonoBehaviour
     public bool onSmile = false;
 
     public int People; // 사람 구분
-    //Ai
+
+    //네비게이션
     NavMeshAgent agent;
-    NavMeshObstacle agent1; //이걸로 가만히 있을때는 장애물되도록 바꿀꺼임
-    //spawnManager 에서 침대 테이블 배열값을 가져옴 @@@@@@@ 이거 보기 너무 안좋아서 따로 스크립트만들어서 거기서 관리하고싶음
-    ChairBedChk bedchairvalue;
-    //여관 레스토랑 벡터값
-    [SerializeField] Vector3 res;
-    [SerializeField] Vector3 inn;
+    [SerializeField] Vector3 lob; // 로비 도착지점
+    [SerializeField] Vector3 res; // 식당 도착지점
+    [SerializeField] Vector3 mot; // 여관 도착지점
 
     [SerializeField] Transform Exit;
-    public int purpose;
 
-    //FirstChecker
-
+    ChairBedChk bedchairvalue;
+    public int purpose; // 방문목적
     public LayerMask layerMask;
    
     public enum STATE
     {
-        Create, Idle, GoSide, Moving, Quest, Eat, Eating, Sleep, Sleeping, Exit
+        Moving, Wait, Order, Eating, Sleeping, Exit
     }
     public STATE myState = default;
-    
     public CharacterStat stat;
-    
-    //public CharState.NPC mystat; // 캐릭터 능력치
-
-    public Transform Line; //초기 맨 뒤쪽 값 전달 >> 앞에 좌표 확인 >> X >> 다음 위치값 전달 >> 반복
 
     void ChangeState(STATE s)
     {
@@ -76,148 +67,98 @@ public class Host : MonoBehaviour
         myState = s;
         switch (myState)
         {
-            case STATE.Create:
-                break;
-            case STATE.Idle: // 로비데스크로 와서 아이들상태 돌입
-                StaffCheck();
-                agent.enabled = false;//네비메시 비활성화
-                agent1.enabled = true;//네비 옵스타클 활성화 //이걸로 가만히 있을때는 장애물되도록 바꿀꺼임
-                StopAllCoroutines(); // 모든 코루틴 멈추고 대기
-                StartCoroutine(deskLine());
-                //NpcClock의 생성
-                if (!Clockchk)
-                {
-                    if (LineChk == true)
-                    {
-                        IconArea = GameObject.Find("IconArea");
-                        objC = Instantiate(Resources.Load("IconPrefabs/ClockIcon"), IconArea.transform) as GameObject;
-                        objC.GetComponent<ClockIcon>().myTarget = myIconZone;
-                        objC.GetComponent<ClockIcon>().myHost = this.gameObject;
-                        Clockchk = true;
-                    }
-                }
-                break;
             case STATE.Moving: // 윤섭
                 StopAllCoroutines();
-                agent1.enabled = false; //네비 옵스타클 비활성화
-                agent.enabled = true; //네비 네비메시 활성화
-                agent.ResetPath();
+                agent.ResetPath(); // Wait 상태에서 Moving으로 바뀔때 목적지를 초기화
+                GetComponent<Animator>().SetBool("IsMoving", true);
                 switch (purpose)
                 {
                     case 0:
-                        ChangeState(STATE.Quest);
+                        agent.SetDestination(lob);
                         break;
                     case 1:
-                        OnLine = true;
-                        GetComponent<Animator>().SetBool("IsMoving", true);
                         agent.SetDestination(res);
-                        StartCoroutine(deskLine());
-                        StartCoroutine(WalkTo(STATE.Eat));
                         break;
                     case 2:
-                        OnLine = true;
-                        GetComponent<Animator>().SetBool("IsMoving", true);
-                        agent.SetDestination(inn);
-                        StartCoroutine(deskLine());
-                        StartCoroutine(WalkTo(STATE.Sleep)); //도착하면
+                        agent.SetDestination(mot);
                         break;
                 }
+                StartCoroutine(ForwardCheck());
                 break;
-            case STATE.Quest: //데스크까지 이동하는 상태
-                StartCoroutine(deskLine());
-                StartCoroutine(deskmoving());
-                break;
-            case STATE.Eat:
-                StaffCheck();
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-                StopAllCoroutines();
-                GetComponent<Animator>().SetBool("IsMoving", false);
-                IconArea = GameObject.Find("IconArea");
-
-                if (!Clockchk)
-                {
-                        IconArea = GameObject.Find("IconArea");
-                        objC = Instantiate(Resources.Load("IconPrefabs/ClockIcon"), IconArea.transform) as GameObject;
-                        objC.GetComponent<ClockIcon>().myTarget = myIconZone;
-                        objC.GetComponent<ClockIcon>().myHost = this.gameObject;
-                        Clockchk = true;
-                }
-
-                //OnIcon("MealIcon");
-                break;
-            case STATE.Eating:
-                IconArea = GameObject.Find("IconArea");
-                OnIcon("EatIcon");
-
-                StopAllCoroutines();
-                GetComponent<Animator>().SetTrigger("IsSeating");
-                Invoke("GoExit", 5);
-                //Invoke("SeatToWalk",11);
-                break;
-            case STATE.Sleep:
-                StaffCheck();
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-                StopAllCoroutines();
-                GetComponent<Animator>().SetBool("IsMoving", false);
-                IconArea = GameObject.Find("IconArea");
-
-                if (!Clockchk)
+            case STATE.Wait:
+                StopAllCoroutines(); // 모든 코루틴 멈추고 대기
+                agent.ResetPath();
+                //시계 생성
+                if (LineChk == true && Clockchk == false) // 줄 서있는 상태 + 이미 생성된 시계가 없다면
                 {
                     IconArea = GameObject.Find("IconArea");
-                    objC = Instantiate(Resources.Load("IconPrefabs/ClockIcon"), IconArea.transform) as GameObject;
-                    objC.GetComponent<ClockIcon>().myTarget = myIconZone;
-                    objC.GetComponent<ClockIcon>().myHost = this.gameObject;
+                    OnIcon("ClockIcon");
                     Clockchk = true;
                 }
-                
+                StartCoroutine(ForwardCheck());
                 break;
-
-            case STATE.Sleeping:
-                IconArea = GameObject.Find("IconArea");
-                OnIcon("SleepIcon");
-
+            case STATE.Order:
                 StopAllCoroutines();
+                LineChk = true; // 줄 서있는 상태
+                if (Clockchk == false) // Wait 없이 바로 Order로 진입했다면 시계를 생성 = 이미 생성된 시계가 없다면
+                {
+                    IconArea = GameObject.Find("IconArea");
+                    OnIcon("ClockIcon");
+                }
+                Destroy(Icon.GetComponent<ClockIcon>().myNotouch); // 시계 노터치 비활성화
+                break;
+            case STATE.Eating:
+                StopAllCoroutines();
+                OnIcon("EatIcon");
+                GetComponent<Animator>().SetTrigger("IsSeating");
+                Invoke("GoExit", 5);
+                break;
+            case STATE.Sleeping:
+                StopAllCoroutines();
+                OnIcon("SleepIcon");
                 GetComponent<Animator>().SetTrigger("IsLaying");
                 Invoke("GoExit", 5);
                 break;
             case STATE.Exit:
+                StopAllCoroutines();
+                LineChk = false; // 줄 서있는 상태가 아님
+                // 퇴장하는 호스트는 입장하는 호스트를 피해감 (우선순위 조절)
+                agent.avoidancePriority = 51;
+                agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+
+                GetComponent<Animator>().SetBool("IsMoving", true);
+
                 if (purpose != 0) // 방문목적이 여관or식당 이라면
                 {
-                    if(onAngry == false)
-                    {
-                        Destroy(Icon);
-                    }
+                    Destroy(Icon); // 잠 또는 식사 아이콘 삭제
                 }
-                StopAllCoroutines();
-                GetComponent<Animator>().SetBool("IsMoving", true);
-                if(onAngry == false) // 화가 안났을 때
+
+                if(onAngry == false) // 주문이 받아 들여졌을 때(화가 안났을 때)
                 {
+                    agent.ResetPath(); // 네비 초기화
+
                     switch (purpose)
                     {
                         case 0:
-                            OnLine = false;
-                            agent1.enabled = false;
-                            agent.enabled = true;
                             break;
-                        case 1:
+                        case 1: //침대 초기화
                             bedchairvalue._chairSlot[count] = ChairBedChk.ChairSlot.None;
                             GetComponent<Animator>().SetBool("SitToStand", true);
-                            agent1.enabled = false;
-                            agent.enabled = true;
-                            agent.ResetPath();
                             break;
-                        case 2:
+                        case 2: //의자 초기화
                             bedchairvalue._bedSlot[count] = ChairBedChk.BedSlot.None;
                             GetComponent<Animator>().SetBool("LayToStand", true);
-                            agent1.enabled = false;
-                            agent.enabled = true;
-                            agent.ResetPath();
                             break;
                     }
                 }
-                else // 화가 났을 때
+                else // 화가 난 상태라면
                 {
-                    StartCoAi();
+                    OnIcon("AngryIcon");
+                }
+
+                if(onSmile == true)
+                {
+                    OnIcon("SmileIcon");
                 }
 
                 agent.SetDestination(Exit.position); // outpoint로 가는 코루틴
@@ -228,38 +169,23 @@ public class Host : MonoBehaviour
     {
         switch (myState)
         {
-            case STATE.Create:
-                break;
-            case STATE.Idle:
-                if (onAngry == true) // 퀘스트를 거절하면 불만 아이콘 생성
+            case STATE.Moving:
+                if(purpose == 0)
                 {
-                    StartCoroutine(onAngryIcon());
-                    onAngry = false;
-                }
-                else if (onSmile == true)
-                {
-                    StartCoroutine(onSmileIcon());
-                    onSmile = false;
+                    if (IsQuest) transform.SetAsFirstSibling();
                 }
                 break;
-            case STATE.Quest:
-                if (IsQuest) transform.SetAsFirstSibling();
-                break;
-            case STATE.Eat:
-                if(onAngry == true)
-                {
-                    ChangeState(STATE.Exit);
-                }
-                break;
-            case STATE.Eating:
-                break;
-            case STATE.Sleep:
+            case STATE.Wait:
                 if (onAngry == true)
                 {
                     ChangeState(STATE.Exit);
                 }
                 break;
-            case STATE.Sleeping:
+            case STATE.Order:
+                if(onAngry == true || onSmile == true)
+                {
+                    ChangeState(STATE.Exit);
+                }
                 break;
             case STATE.Exit:
                 transform.SetAsLastSibling();
@@ -269,9 +195,8 @@ public class Host : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent1 = GetComponent<NavMeshObstacle>();
 
-        bedchairvalue = FindObjectOfType<ChairBedChk>();//GetComponent<SpawnManager>();
+        bedchairvalue = FindObjectOfType<ChairBedChk>();
         inst = this;
     }
     void Start()
@@ -315,47 +240,33 @@ public class Host : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position + transform.forward * 7.0f, 7.0f);
     }
-    IEnumerator deskLine()// 줄세우기
+    IEnumerator ForwardCheck()// 앞에 누가있는지 구분하여 상태를 Wait 또는 Order로 바꿔줌
     {
         while (true)
         {
-            if (OnLine)
+            if (Physics.SphereCast(transform.position, 7.0f, transform.forward, out RaycastHit hitinfo, 7.0f, layerMask)) // 내 앞에 누군가 있을 경우
             {
-                if (Physics.SphereCast(transform.position, 7.0f, transform.forward , out RaycastHit hitinfo, 7.0f, layerMask))
+                agent.ResetPath();
+                agent.velocity = Vector3.zero; //가속도 = 0
+                GetComponent<Animator>().SetBool("IsMoving", false); // 걷는 애니 중지
+
+                if (hitinfo.collider.gameObject.layer == 6) // layer 6 = Host, layer 3 = Staff // 앞에 Host가 있을 경우
                 {
-                    if (hitinfo.collider.gameObject.layer == 6) // layer 6 = Host, layer 3 = Staff // Host가 걸렸을 경우
+                    if(hitinfo.collider.gameObject.GetComponent<Host>().LineChk == true)
                     {
-                        if (hitinfo.collider.GetComponent<Host>().LineChk == true) //  줄서있는 사람과 부딪쳤을 경우 
-                        {
-                            LineChk = true;
-                        }
-                        GetComponent<Animator>().SetBool("IsMoving", false);
-                        if (purpose == 1 || purpose == 2)
-                        {
-                            agent.velocity = Vector3.zero;
-                        }
-                        ChangeState(STATE.Idle);
+                        LineChk = true;
                     }
-                    else if(hitinfo.collider.gameObject.layer == 3) // Staff가 걸렸을 경우
-                    {
-                        if(purpose == 0) // 로비일 경우
-                        {
-                            GetComponent<Animator>().SetBool("IsMoving", false);
-                            ChangeState(STATE.Idle);
-                        }
-                    } 
+                    ChangeState(STATE.Wait);
                 }
-                else
+                else // 앞에 Staff가 있을 경우
                 {
-                    if(purpose != 0)
-                    {
-                        ChangeState(STATE.Moving);
-                    }
-                    else if(purpose == 0)
-                    {
-                        ChangeState(STATE.Quest);
-                    }
+                    myStaff = hitinfo.collider.gameObject; // myStaff를 각 구역에 맞게 설정해줌 ( 스마일 아이콘 발동 시키기 위해 )
+                    ChangeState(STATE.Order); // Order로 상태변화
                 }
+            }
+            else // 앞에 있는 누군가가 비켰을 경우
+            {
+                ChangeState(STATE.Moving);
             }
             yield return null;
         }
@@ -384,26 +295,7 @@ public class Host : MonoBehaviour
             yield return null;
         }
     }
-    IEnumerator deskmoving()
-    {
-        OnLine = true;
-        Vector3 dir = Line.position - transform.position;
-        float dist = dir.magnitude;
-        dir.Normalize();
-        GetComponent<Animator>().SetBool("IsMoving", true);
-        while (dist > 0.0f)
-        {
-            float delta = stat.moveSpeed * Time.deltaTime;
-
-            if (delta > dist)
-            {
-                delta = dist;
-            }
-            dist -= delta;
-            transform.Translate(dir * delta, Space.World);
-            yield return null;
-        }
-    }
+   
     IEnumerator BedToSleeping() //도착지점에 도착하면 Eat상태에서 Eating상태로
     {
         while (true)
@@ -425,106 +317,47 @@ public class Host : MonoBehaviour
             yield return null;
         }
     }
-
-    IEnumerator WalkTo(STATE HostState) // 도착하면 Walk상태에서 Eat이나 여관 상태로
-    {
-        while (true)
-        {
-            if (!agent.pathPending)
-            {
-                if (agent.remainingDistance == 0)//남은거리가0이면
-                {
-                    agent.velocity = Vector3.zero;
-                    ChangeState(HostState);
-                    agent.ResetPath();
-                }
-            }
-            yield return null;
-        }
-    }
-
-    IEnumerator onQuestIcon()
-    {
-        yield return new WaitForSeconds(1.5f);
-
-        OnIcon("QuestIcon");
-    }
-
-    IEnumerator onAngryIcon()
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        OnIcon("AngryIcon");
-
-        IsFinishQuest = true; // 불만시 나가게끔
-        StopAllCoroutines();
-        IsQuest = false;
-        ChangeState(STATE.Exit);
-    }
-
-    IEnumerator onSmileIcon() // 스마일 아이콘
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        OnIcon("SmileIcon");
-
-        if (hostchk)
-        {
-            IsFinishQuest = true;
-        }
-        StopCoroutine(deskLine());
-        IsQuest = false;
-        ChangeState(STATE.Exit);
-    }
-
-    IEnumerator onMandBIcon(GameObject Icon,string IconName) // 식사 & 침대 아이콘
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        OnIcon(IconName);
-    }
-
-    IEnumerator FinishQuest(float t) //퀘스트 존에 가서 퀘스트를 하도록
+    IEnumerator FinishQuest(float t) // 재방문
     {
         yield return new WaitForSeconds(t);
         SpawnManager.Instance.Teleport(gameObject);
-        IsFinishQuest = true;
-        OnLine = false;
         Clockchk = false;
-        ChangeState(STATE.Quest);
+        onSmile = false;
+        ChangeState(STATE.Moving);
     }
     public void GoExit() //먹는상태에서 나가는 상태로
     {
         ChangeState(STATE.Exit);
-        IsFinishQuest = true;
     }
-
     public void StartFinishQuest()
     {
         StartCoroutine(FinishQuest(3.0f));
     }
 
-    public void StartCoQi() // = StartCoroutineQuestIcon
+    // 아이콘 관련 함수 또는 코루틴
+    IEnumerator CoIcon(string IconName, float WaitSeconds)
     {
-        StartCoroutine(onQuestIcon());
-    }
+        yield return new WaitForSeconds(WaitSeconds);
 
-    public void StartCoAi() // = StartCoroutineAngryIcon
+        OnIcon(IconName);
+
+        StopCoroutine(CoIcon(IconName, WaitSeconds));
+    }
+    public void CorourineIcon(string IconName, float WaitSeconds)
     {
-        StartCoroutine(onAngryIcon());
+        StartCoroutine(CoIcon(IconName, WaitSeconds));
     }
-
-    public void StartCoMandB(string IconName)
-    {
-        StartCoroutine(onMandBIcon(Icon,IconName));
-    }
-
     public void OnIcon(string IconName)
     {
         Icon = Instantiate(Resources.Load($"IconPrefabs/{IconName}"), IconArea.transform) as GameObject;
 
         switch (IconName)
         {
+            case "ClockIcon":
+                Icon.GetComponent<ClockIcon>().myIconZone = myIconZone;
+                Icon.GetComponent<ClockIcon>().myHost = this.gameObject;
+                Clockchk = true;
+                break;
             case "SmileIcon":
                 Icon.GetComponent<MoodIcon>().myIconZone = myIconZone;
                 break;
@@ -550,13 +383,6 @@ public class Host : MonoBehaviour
             case "EatIcon":
                 Icon.GetComponent<PubMotelIcon>().myIconZone = myIconZone;
                 break;
-        }
-    }
-    public void StaffCheck() // Host의 앞에 서있는 Staff 어느 구역의 Staff인지 구분하는 함수
-    {
-        if (Physics.SphereCast(transform.position, 7.0f, transform.forward, out RaycastHit hitinfo, 7.0f, layerMask))
-        {
-            myStaff = hitinfo.collider.gameObject;
         }
     }
 }

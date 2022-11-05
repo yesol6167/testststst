@@ -1081,7 +1081,6 @@ GameObject:
   - component: {fileID: 6630355809514670007}
   - component: {fileID: 835563704436911168}
   - component: {fileID: -466047134681291983}
-  - component: {fileID: 8020497262532197612}
   - component: {fileID: 8020704923561427640}
   m_Layer: 6
   m_Name: Female_Witch
@@ -1124,20 +1123,19 @@ MonoBehaviour:
   spawnPoints: {fileID: 0}
   myIconZone: {fileID: 4113634201033213907}
   OutPoint: {fileID: 6193417168652664371, guid: 09e6d1abca4268442aa62c5fb9fdadb2, type: 3}
-  objC: {fileID: 0}
   myStaff: {fileID: 0}
-  hostchk: 0
-  Firstchk: 0
+  IconArea: {fileID: 0}
+  VLchk: 0
   IsFinishQuest: 0
   exitchk: 0
-  OnLine: 0
   Clockchk: 0
   IsQuest: 0
   onAngry: 0
   onSmile: 0
   People: 0
+  lob: {x: 10, y: 0, z: -21}
   res: {x: -25.8, y: 0, z: -21.5}
-  inn: {x: 41.5, y: 0, z: -23.4}
+  mot: {x: 41.5, y: 0, z: -23.4}
   Exit: {fileID: 4462667327580000466, guid: 2c9b9938b5015044699511f5e3319ba8, type: 3}
   purpose: 0
   layerMask:
@@ -1146,7 +1144,6 @@ MonoBehaviour:
   myState: 1
   stat:
     moveSpeed: 20
-  Line: {fileID: 2103546092097468213, guid: fcbc13295724bd341810203ea7b54eae, type: 3}
 --- !u!95 &4233435252823613627
 Animator:
   serializedVersion: 4
@@ -1258,23 +1255,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!208 &8020497262532197612
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4233435252832969811}
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Shape: 0
-  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
+  m_ObstacleAvoidanceType: 0
 --- !u!114 &8020704923561427640
 MonoBehaviour:
   m_ObjectHideFlags: 0

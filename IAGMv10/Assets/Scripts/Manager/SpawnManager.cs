@@ -76,7 +76,7 @@ public class SpawnManager : Singleton<SpawnManager>
                 // VL[0]을 npc[0]에 넣는다.
                 Host = Instantiate(VL[VLnum], spawnPoints[0]) as GameObject; // 생성될때 VLnum를 확률에 따라 조정
                 Host.GetComponent<VLNpc>().job = vl.NpcJob;
-                Host.GetComponent<Host>().hostchk = true; // = 해당 캐릭터는 마을사람이다
+                Host.GetComponent<Host>().VLchk = true; // = 해당 캐릭터는 마을사람이다
                 Host.GetComponent<Host>().purpose = 0; // = 방문 구역이 로비이다
             }
             else // 모험가 생성
@@ -93,7 +93,7 @@ public class SpawnManager : Singleton<SpawnManager>
                     hcount--; // ? 주현 : 해당 명령어는 왜 있는가?
                 }
                 Host.GetComponent<ADNpc>().adtype = ADnum;
-                Host.GetComponent<Host>().hostchk = false; // = 해당 캐릭터는 모험가이다
+                Host.GetComponent<Host>().VLchk = false; // = 해당 캐릭터는 모험가이다
                 //Host.GetComponent<QuestInformation>().NpcChk = true;
             }
             Host.GetComponent<Host>().People = Nnum;
@@ -106,7 +106,7 @@ public class SpawnManager : Singleton<SpawnManager>
                 case 0: // 마을사람
                     GameObject Host = Instantiate(VL[VLnum], spawnPoints[0]) as GameObject; // 생성될때 VLnum를 확률에 따라 조정
                     Host.GetComponent<VLNpc>().job = vl.NpcJob;
-                    Host.GetComponent<Host>().hostchk = true; // = 해당 캐릭터는 마을사람이다
+                    Host.GetComponent<Host>().VLchk = true; // = 해당 캐릭터는 마을사람이다
                     Host.GetComponent<Host>().purpose = 0; // = 방문 구역이 로비이다
                     Host.GetComponent<Host>().People = 0;
                     break;
@@ -115,7 +115,7 @@ public class SpawnManager : Singleton<SpawnManager>
                     Host = Instantiate(AD[ADnum], spawnPoints[Purpose]) as GameObject;
                     Host.GetComponent<ADNpc>().adtype = ADnum;
                     Host.GetComponent<Host>().purpose = Purpose; // = 방문 구역이 로비(0)/펍(1)/모텔(2) 중에서 랜덤으로 주어진다.
-                    Host.GetComponent<Host>().hostchk = false; // = 해당 캐릭터는 모험가이다
+                    Host.GetComponent<Host>().VLchk = false; // = 해당 캐릭터는 모험가이다
                     //Host.GetComponent<QuestInformation>().NpcChk = true;
                     break;
             }
