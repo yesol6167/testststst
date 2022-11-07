@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
+using System.ComponentModel;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
-public class UIManager : Singleton<UIManager>
+[Serializable]
+public class UIManager : MonoBehaviour
 {
+    public static UIManager Inst = null;
+
     //10억부터 벗어남
     public TMP_Text Gold;
     public TMP_Text Fame;
@@ -21,9 +27,36 @@ public class UIManager : Singleton<UIManager>
     float E_time = 2.0f; // 증축
     bool timecheck = false;
     float orgtime = 2.0f; // 보여지고 나서 초기화 되는 값
-
     //time과orgtime은 값이 같아야함
 
+    //구조체
+    public struct USERDATA
+    {
+        [SerializeField] int gold;
+        [SerializeField] int fame;
+
+        public int Gold
+        {
+            get => GameManager.Instance.Gold;
+            set
+            {
+                GameManager.Instance.Gold = value;
+            }
+        }
+        public int Fame
+        {
+            get => GameManager.Instance.Fame;
+            set
+            {
+                GameManager.Instance.Fame = value;
+            }
+        }
+    }
+
+    private void Awake()
+    {
+        Inst = this;
+    }
 
     void Update()
     {
@@ -55,6 +88,7 @@ public class UIManager : Singleton<UIManager>
             }
         }
     }
+
     public void UiChangeGold(int Price) // 증감된 골드 표시
     {
         timecheck = true; // 시간재기

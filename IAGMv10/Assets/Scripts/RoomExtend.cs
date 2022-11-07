@@ -33,7 +33,7 @@ public class RoomExtend : MonoBehaviour
         }
         else
         {
-            UIManager.Instance.ExtendFail = true;
+            UIManager.Inst.ExtendFail = true;
         }
     }
 
@@ -54,7 +54,7 @@ public class RoomExtend : MonoBehaviour
         }
         else
         {
-            UIManager.Instance.ExtendFail = true;
+            UIManager.Inst.ExtendFail = true;
         }
     }
 }
