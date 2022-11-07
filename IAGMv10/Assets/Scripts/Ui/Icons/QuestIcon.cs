@@ -37,26 +37,21 @@ public class QuestIcon : MonoBehaviour, IBeginDragHandler, IDragHandler
         }
     }
     public void ShowRequestWindow() //퀘스트 버튼 누르면 퀘스트 요청서 생성
-    { // 퀘스트 요청서가 가운데에 보이게 위치 설정
-        //퀘스트 완료시 if문으로 정리 >> 퀘스트를 완료했다는 것을 체크
-        /*GameObject RQwindow = NPCchk ? Instantiate(Resources.Load("Prefabs/RequestWindow"), GameObject.Find("QuestWindowArea").transform) as GameObject : // 마을사람
-            //모험가
-            hostobj.GetComponent<Host>().IsFinishQuest ? Instantiate(Resources.Load("Prefabs/QuestReportWindow"), GameObject.Find("QuestWindowArea").transform) as GameObject :
-            Instantiate(Resources.Load("Prefabs/QuestWindow"), GameObject.Find("QuestWindowArea").transform) as GameObject; // 참이면 마을사람 거짓이면 모험가 >> 모험가에서 참이면 보고서, 거짓이면 신청서*/
+    {
         GameObject RQwindow;
         if (VLchk)
         {
-            RQwindow = Instantiate(Resources.Load("Prefabs/RequestWindow"), GameObject.Find("QuestWindowArea").transform) as GameObject;
+            RQwindow = Instantiate(Resources.Load("Prefabs/RequestWindow"), GameObject.Find("WindowArea").transform) as GameObject;
         }
         else // 모험가라면
         {
             if (hostobj.GetComponent<Host>().Questing == true)
             {
-                RQwindow = Instantiate(Resources.Load("Prefabs/QuestReportWindow"), GameObject.Find("QuestWindowArea").transform) as GameObject;
+                RQwindow = Instantiate(Resources.Load("Prefabs/QuestReportWindow"), GameObject.Find("WindowArea").transform) as GameObject;
             }
             else
             {
-                RQwindow = Instantiate(Resources.Load("Prefabs/QuestWindow"), GameObject.Find("QuestWindowArea").transform) as GameObject;
+                RQwindow = Instantiate(Resources.Load("Prefabs/QuestWindow"), GameObject.Find("WindowArea").transform) as GameObject;
             }
         }
 

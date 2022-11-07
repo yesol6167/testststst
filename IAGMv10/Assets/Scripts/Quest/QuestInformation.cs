@@ -24,11 +24,11 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
     public bool IsQuestchk;
     public bool NpcChk = true; // 해당 스크립트가 바인딩 되어있는 오브젝트가 모험가인지 아니면 Ui프리팹 인지 구분 (false=요청서/true=모험가)
 
-    GameObject QuestWindowArea; // AdDataWindow가 자식으로 생성되는 UiCanvas안의 부모 오브젝트
+    GameObject WindowArea; // AdDataWindow가 자식으로 생성되는 UiCanvas안의 부모 오브젝트
 
     public void Start()
     {
-        QuestWindowArea = GameObject.Find("QuestWindowArea");
+        WindowArea = GameObject.Find("WindowArea");
         //UI매니저
         if(NpcChk == false) // Ui프리팹일 경우
         {
@@ -104,22 +104,14 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
         QuestManager.Instance.EndQuest(myQuest);
         if (chk)
         { // 성공시 증가 연산
-            GameManager.Instance.Gold += myQuest.rewardgold;
-            GameManager.Instance.Fame += myQuest.rewardfame;
-            UIManager.Instance.GoldiIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{myQuest.rewardgold}"; //GoldiIncrease
-            UIManager.Instance.ChangeGold = true;
-            UIManager.Instance.FameIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{myQuest.rewardfame}"; //FameiIncrease
-            UIManager.Instance.ChangeFame = true;
+            GameManager.Instance.ChangeGold(myQuest.rewardgold);
+            GameManager.Instance.ChangeFame(myQuest.rewardfame);
             ChildOBJ.GetComponent<Host>().onSmile = true;
         }
         else
         { // 실패시 감소 연산
-            GameManager.Instance.Gold -= myQuest.rewardgold;
-            GameManager.Instance.Fame -= myQuest.rewardfame;
-            UIManager.Instance.GoldiIncrease.GetComponent<TMP_Text>().text = $"<color=blue>+{myQuest.rewardgold}"; //GoldiIncrease
-            UIManager.Instance.ChangeGold = true;
-            UIManager.Instance.FameIncrease.GetComponent<TMP_Text>().text = $"<color=blue>+{myQuest.rewardfame}"; //FameiIncrease
-            UIManager.Instance.ChangeFame = true;
+            GameManager.Instance.ChangeGold(-myQuest.rewardgold);
+            GameManager.Instance.ChangeFame(-myQuest.rewardfame);
             ChildOBJ.GetComponent<Host>().onAngry = true;
         }
         //현재 퀘스트 리스트를 완료 퀘스트 리스트에 추가
@@ -132,6 +124,6 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
     }
     public void onAdDataWindow() // 모험가 정보창 띄우기
     {
-        GameObject obj = Instantiate(Resources.Load("UiPrefabs/AdDataWindow"), QuestWindowArea.transform) as GameObject;
+        GameObject obj = Instantiate(Resources.Load("UiPrefabs/AdDataWindow"), WindowArea.transform) as GameObject;
     }
 }

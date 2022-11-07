@@ -12,35 +12,49 @@ public class RoomExtend : MonoBehaviour
     public GameObject[] PubChairs;
     public int RoomsCount = 0;
     public int PubCount = 0;
+    int Price = -1000; // 가격
 
-    // Start is called before the first frame update
     void Start()
     {
         Furniture = GameObject.FindObjectOfType<ChairBedChk>();
     }
     public void RExtend() //방 증축
     {
-        if (Furniture._bedSlot.Count < 5)
+        
+        if(GameManager.Instance.Gold >= -Price)
         {
-            Furniture._bedSlot.Add(ChairBedChk.BedSlot.None);
-            Rooms[RoomsCount].SetActive(true);
-            RoomsCount++;
+            if (Furniture._bedSlot.Count < 5)
+            {
+                Furniture._bedSlot.Add(ChairBedChk.BedSlot.None);
+                Rooms[RoomsCount].SetActive(true);
+                RoomsCount++;
+                GameManager.Instance.ChangeGold(Price);
+            }
         }
-
-
+        else
+        {
+            UIManager.Instance.ExtendFail = true;
+        }
     }
 
     public void PubExtend() //식당 증축
     {
-        if (Furniture._chairSlot.Count < 11)
+        if (GameManager.Instance.Gold >= -Price)
         {
-            for (int i = 0; i < 2; i++)
+            if (Furniture._chairSlot.Count < 11)
             {
-                Furniture._chairSlot.Add(ChairBedChk.ChairSlot.None);
+                for (int i = 0; i < 2; i++)
+                {
+                    Furniture._chairSlot.Add(ChairBedChk.ChairSlot.None);
+                }
+                PubChairs[PubCount].SetActive(true);
+                PubCount++;
+                GameManager.Instance.ChangeGold(Price);
             }
-            PubChairs[PubCount].SetActive(true);
-            PubCount++;
+        }
+        else
+        {
+            UIManager.Instance.ExtendFail = true;
         }
     }
-
 }

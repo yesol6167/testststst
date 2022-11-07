@@ -30,9 +30,7 @@ public class PubMotelIcon : MonoBehaviour // Bed + Meat + Sleep + Eat æ∆¿Ãƒ‹
 
     public void AddGold()
     {
-        GameManager.Instance.Gold += Price;
-        UIManager.Instance.GoldiIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{Price}";
-        UIManager.Instance.ChangeGold = true;
+        GameManager.Instance.ChangeGold(Price);
     }
 
     public void ChairChk()

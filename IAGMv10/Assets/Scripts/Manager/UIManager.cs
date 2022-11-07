@@ -11,40 +11,78 @@ public class UIManager : Singleton<UIManager>
 
     public bool ChangeGold = false; // 골드의 변화를 감지
     public bool ChangeFame = false;
-    public GameObject GoldiIncrease; // 골드의 증감
+    public bool ExtendFail = false;
+   
+    public GameObject GoldIncrease; // 골드의 증감
     public GameObject FameIncrease; // 명성의 증감
+    public GameObject NoticeWindow;
 
     float time = 2.0f; // 보여지는 시간
+    float E_time = 2.0f; // 증축
+    bool timecheck = false;
     float orgtime = 2.0f; // 보여지고 나서 초기화 되는 값
+
     //time과orgtime은 값이 같아야함
 
 
     void Update()
     {
-        if(ChangeGold) // 골드의 값이 변하면 변한 값을 몇초 동안 보여주고 사라짐
-        {
-            GoldiIncrease.SetActive(true);
+        Gold.text = GameManager.Instance.Gold.ToString();
+        Fame.text = GameManager.Instance.Fame.ToString();
 
-            time -= Time.deltaTime;
-            if (time < 0f) // 변한 값을 몇초 동안 보여주고 사라짐
+
+        if (timecheck)
+        {
+            time -= Time.unscaledDeltaTime;
+            if(time < 0)
             {
-                GoldiIncrease.SetActive(false);
-                ChangeGold = false;
+                GoldIncrease.SetActive(false);
+                FameIncrease.SetActive(false);
                 time = orgtime;
             }
         }
 
-        if (ChangeFame) // 골드의 값이 변하면 변한 값을 몇초 동안 보여주고 사라짐
+        if (ExtendFail) // 골드가 모자라 증축에 실패했을 때
         {
-            FameIncrease.SetActive(true);
+            NoticeWindow.SetActive(true);
 
-            time -= Time.deltaTime;
-            if (time < 0f) // 변한 값을 몇초 동안 보여주고 사라짐
+            E_time -= Time.deltaTime;
+            if (E_time < 0f) // 변한 값을 몇초 동안 보여주고 사라짐
             {
-                GoldiIncrease.SetActive(false);
-                ChangeFame = false;
-                time = orgtime;
+                NoticeWindow.SetActive(false);
+                ExtendFail = false;
+                E_time = orgtime;
             }
         }
     }
+    public void UiChangeGold(int Price) // 증감된 골드 표시
+    {
+        timecheck = true; // 시간재기
+
+        if (Price > 0) // 양수 -> 빨간색으로 표시
+        {
+            GoldIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{Price}";
+        }
+        else // 음수 -> 파란색으로 표시
+        {
+            GoldIncrease.GetComponent<TMP_Text>().text = $"<color=blue>{Price}";
+        }
+        GoldIncrease.SetActive(true);
+    }
+
+    public void UiChangeFame(int Price) // 증감된 명예 표시
+    {
+        timecheck = true; // 시간재기
+
+        if (Price > 0) // 양수 -> 빨간색으로 표시
+        {
+            FameIncrease.GetComponent<TMP_Text>().text = $"<color=red>+{Price}";
+        }
+        else // 음수 -> 파란색으로 표시
+        {
+            FameIncrease.GetComponent<TMP_Text>().text = $"<color=blue>{Price}";
+        }
+        FameIncrease.SetActive(true);
+    }
 }
+

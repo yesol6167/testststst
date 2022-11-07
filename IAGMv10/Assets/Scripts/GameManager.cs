@@ -11,13 +11,6 @@ public class GameManager : Singleton<GameManager>
     public int Fame;
     // Start is called before the first frame update
 
-
-    public void Update()
-    {
-        UIManager.Instance.Gold.text = Gold.ToString();
-        UIManager.Instance.Fame.text = Fame.ToString();
-    }
-
     public void GoTitle() //타이틀 화면으로 가기
     {
         SceneManager.LoadScene(0);
@@ -26,5 +19,17 @@ public class GameManager : Singleton<GameManager>
     public void GoMain() //메인화면으로 가기
     {
         SceneManager.LoadScene(1);
+    }
+
+    public void ChangeGold(int Price)
+    {
+        Gold += Price;
+        UIManager.Instance.UiChangeGold(Price);
+    }
+
+    public void ChangeFame(int Price)
+    {
+        Fame += Price;
+        UIManager.Instance.UiChangeFame(Price);
     }
 }

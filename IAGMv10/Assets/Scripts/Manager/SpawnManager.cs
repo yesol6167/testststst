@@ -69,8 +69,8 @@ public class SpawnManager : Singleton<SpawnManager>
         curTime = 0;
         hostCount++;
         if ( hcount > 0 )
-        { 
-            int Nnum = UnityEngine.Random.Range(0, 2); // (0, 1)=마을 사람만 소환 / (1, 2)=모험가만 소환 / (0, 2)=마을사람과 모험가 랜덤으로 소환 
+        {
+            int Nnum = UnityEngine.Random.Range(0, 3);
             if (Nnum == 0) // 마을사람 생성
             { 
                 // VL[0]을 npc[0]에 넣는다.
