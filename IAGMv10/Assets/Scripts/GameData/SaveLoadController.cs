@@ -7,6 +7,7 @@ using System.IO;
 using TMPro;
 using static System.Net.Mime.MediaTypeNames;
 using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 public class SaveLoadController : MonoBehaviour
 {
@@ -32,31 +33,6 @@ public class SaveLoadController : MonoBehaviour
             SaveBtn[i].text = "비어있음";
         }
     }
-
-    /*public void SaveClick(int number)
-    {
-        inst.NowSave = number;
-        //저장하기 버튼 한번 누를때마다 save_숫자 늘어나게
-
-        ADNpc.ADNPC adnpc = new ADNpc.ADNPC();
-        UIManager.USERDATA uIManager = new UIManager.USERDATA();
-
-        SaveSystem.Save<ADNpc.ADNPC>(adnpc, SaveName + NowSave.ToString());
-        SaveSystem.Save<UIManager.USERDATA>(uIManager, SaveName + NowSave.ToString());
-
-        Debug.Log(SaveName + NowSave.ToString());
-        if (File.Exists(SaveSystem.SavePath + $"{SaveName} + {number}")) //데이터가 있는 경우
-        {
-            SaveFile[number] = true;
-            LoadClick();
-            SaveBtn[number].text = SaveName + NowSave.ToString();
-        }
-        else
-        {
-            SaveBtn[number].text = SaveName + NowSave.ToString();
-        }
-        //Debug.Log("저장 성공");
-    }*/
 
     public void LoadClick()
     {
@@ -107,5 +83,10 @@ public class SaveLoadController : MonoBehaviour
 
         ChooseFile[num].GetComponentInParent<UnityEngine.UI.Image>().color = Color.white;
         //Debug.Log("저장 성공");
+    }
+
+    public void OnLodeFile()
+    {
+        //SceneManager.LoadScene("Main");
     }
 }
