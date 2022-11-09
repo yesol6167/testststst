@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
-public class CamManager : Singleton<CamManager>
+public class CamManager : MonoBehaviour
 {
     public Transform myAxis;
     public Transform myCam;
