@@ -23,6 +23,12 @@ public class UIManager : MonoBehaviour
     public GameObject FameIncrease; // 명성의 증감
     public GameObject NoticeWindow;
 
+    //QuestInfo에서 옮김
+    //바인딩
+    public GameObject ParentOBJ;
+    public GameObject NewsBArea; // NewsBalloon이 자식으로 생성되는 UiCanvas안의 부모 오브젝트
+    public GameObject WindowArea; // AdDataWindow가 자식으로 생성되는 UiCanvas안의 부모 오브젝트
+
     float time = 2.0f; // 보여지는 시간
     float E_time = 2.0f; // 증축
     bool timecheck = false;
@@ -119,4 +125,3 @@ public class UIManager : MonoBehaviour
         FameIncrease.SetActive(true);
     }
 }
-

@@ -10,45 +10,74 @@ public class SpawnManager : Singleton<SpawnManager>
     public int maxCount; // 길드안에 생성될수 있는 최대 캐릭터 수
     public float spawnTime; // 캐릭터 생성 주기
     float curTime;
+    public float EndTime = 0.0f;
+    public float DeadLine = 555.0f;
+    public float Day = 600.0f;
     public Transform[] spawnPoints;
     public GameObject[] VL; // Villager(마을사람)
     public GameObject[] AD; // Adventeur(모험가)
     bool Hostchk;
     public int hcount = 0;
     public int ADcount = 0;
-    public GameObject Host;
+    GameObject Host;
     public VLNpc.VLNPC[] VLarray = new VLNpc.VLNPC[3];
     public int total;
     public bool first = true;
+    bool deadlinechk = true;
 
-    [SerializeField]
-    public GameObject BlockChkZone;
+    //몬스터
+    public MonsterStat.GRADE grade;
+    public GameObject monster;
+    public GameObject[] monsters;
+    public Transform[] BattlePoint;
 
-    new private void Awake()
-    {
-
-    }
-
+    public bool BlockChk = false; // Npc 생성위치에 이미 생성된 Npc가 서있어서 생성을 막고있는지 check
     private void Update()
     {
-        if(BlockChkZone.GetComponent<BlockCheckZone>().BlockChk == false) // Npc 생성위치에 아무런 방해물이 없어서 정상일 때
-        {
-            if (curTime >= spawnTime && hostCount < maxCount)
+        EndTime += Time.deltaTime;
+        if (EndTime < DeadLine) {
+
+            if (BlockChk == false) // Npc 생성위치에 아무런 방해물이 없어서 정상일 때
             {
-                Addvlnpc(); // 가중치 값 세팅
-                if (first)
+                if (curTime >= spawnTime && hostCount < maxCount)
                 {
-                    for (int i = 0; i < vlnpcs.Count; i++)
+                    Addvlnpc(); // 가중치 값 세팅
+                    if (first)
                     {
-                        total += vlnpcs[i].weight;
+                        for (int i = 0; i < vlnpcs.Count; i++)
+                        {
+                            total += vlnpcs[i].weight;
+                        }
+                        first = false;
                     }
-                    first = false;
+                    SpawnHost(); // 콜라이더에서 불값을 전달하고 이프문에서 불값을 검사함
                 }
-                SpawnHost(); // 콜라이더에서 불값을 전달하고 이프문에서 불값을 검사함
+            }
+        }
+        else
+        {
+            if (deadlinechk == true)
+            {
+                InvokeRepeating("DeadLineMessage", 0.0f, 10.0f);
+                deadlinechk = false;
             }
         }
 
         curTime += Time.deltaTime;
+        if(EndTime >= Day)
+        {
+            QuestManager.Instance.EndQuestClear();
+            EndTime = 0.0f;
+            curTime = 0.0f;
+            CancelInvoke("DeadLineMessage");
+            deadlinechk = true;
+        }
+    }
+
+    void DeadLineMessage()
+    {
+        GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), UIManager.Inst.NewsBArea.transform) as GameObject;
+        obj.GetComponent<NewsBalloon>().SetText("마감시간 입니다!");
     }
 
     public void SpawnHost()
@@ -107,7 +136,7 @@ public class SpawnManager : Singleton<SpawnManager>
         }
         else // if(hcount = 0) 현재 길드내에 마을사람이 없으면(처음에) 모험가(방문목적:모텔/여관)와 마을사람이 50:50의 확률로 생성됨
         {
-            int Num = UnityEngine.Random.Range(0, 2);
+            int Num = UnityEngine.Random.Range(0, 1);
             switch(Num)
             {
                 case 0: // 마을사람
@@ -190,5 +219,25 @@ public class SpawnManager : Singleton<SpawnManager>
             }
         }
         return default;
+    }
+    public void MonsterSpawn()
+    {
+        monster = Instantiate(monsters[Random.Range(0, 3)]) as GameObject;
+        for (int i = 0; i < BattlePoint.Length;)
+        {
+            //꽉 찼을 때 예외처리 필요
+            if (BattlePoint[i].transform.parent.GetComponent<SpawnChk>().chk == true)
+            {
+                monster.transform.position = BattlePoint[i].gameObject.transform.position;
+                //빈자리인지 확인
+                monster.transform.parent = BattlePoint[i].transform;
+                break;
+            }
+            else
+            {
+                i++;
+            }
+        }
+        monster.GetComponent<MonsterStat>().grade = grade;
     }
 }

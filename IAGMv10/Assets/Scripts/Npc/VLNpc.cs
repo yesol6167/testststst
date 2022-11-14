@@ -268,7 +268,7 @@ public class VLNpc : MonoBehaviour
                 break;
             case 1:
                 {
-                    weights[1] = 100;
+                    weights[0] = 100;
                 }
                 break;
         }

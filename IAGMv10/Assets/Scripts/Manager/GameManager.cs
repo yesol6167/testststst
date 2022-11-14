@@ -9,11 +9,6 @@ public class GameManager : Singleton<GameManager>
     public int Gold;
     public int Fame;
 
-    private void Awake()
-    {
-        
-    }
-
     public void GoTitle() //타이틀 화면으로 가기
     {
         SceneManager.LoadScene(0);

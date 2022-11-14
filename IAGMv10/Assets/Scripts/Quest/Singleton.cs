@@ -27,14 +27,14 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         if (instance == null)
         {
             instance = this as T;
-            if (transform.parent != null && transform.root != null)
+            /*if (transform.parent != null && transform.root != null)
             {
                 DontDestroyOnLoad(transform.root.gameObject);
             }
             else
             {
                 DontDestroyOnLoad(gameObject);
-            }
+            }*/
         }
         else
         {

@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class ADNpc : MonoBehaviour
 {
+    public LayerMask enemyMask = default;
+
+    public GameObject AI_Per;
+
     public int adtype;
 
     public Sprite[] NpcProfiles;
@@ -23,89 +27,95 @@ public class ADNpc : MonoBehaviour
         switch (a) // 수정전 n by주현
         {
             case 0: // 여자 궁수
+                adnpc.myStatInfo.profile = np[0];
                 adnpc.myStatInfo.name = "셀리나";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.ACHER;
-                adnpc.myStatInfo.charGrade = Grade(adnpc); // 궁수 공격력
+                adnpc.myStatInfo.agility = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩증가
+                adnpc.myStatInfo.intellect = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 1씩 증가
+                adnpc.myStatInfo.strong = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
+                adnpc.myStatInfo.dexterity = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩 증가
                 adnpc.myStatInfo.health = 20 + (adnpc.myStatInfo.strong / 5); // 10당 2씩 증가
                 adnpc.myStatInfo.attack = 15 + (adnpc.myStatInfo.dexterity / 2); // 10당 3씩 증가
                 adnpc.myStatInfo.defence = 15 + (adnpc.myStatInfo.strong / 10); // 10당 1씩 증가
-                adnpc.myStatInfo.agility = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩증가
-                adnpc.myStatInfo.intellect = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 1씩 증가
-                adnpc.myStatInfo.strong = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
-                adnpc.myStatInfo.dexterity = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩 증가
+                adnpc.myStatInfo.charGrade = Grade(adnpc); // 궁수 공격력
                 break;
             case 1: // 여자 도적
+                adnpc.myStatInfo.profile = np[1];
                 adnpc.myStatInfo.name = "사나";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.THIEF;
-                adnpc.myStatInfo.charGrade = Grade(adnpc);
+                adnpc.myStatInfo.agility = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩증가
+                adnpc.myStatInfo.intellect = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
+                adnpc.myStatInfo.strong = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 1씩 증가
+                adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
                 adnpc.myStatInfo.health = 15 + (adnpc.myStatInfo.strong / 5);
                 adnpc.myStatInfo.attack = 20 + (adnpc.myStatInfo.agility / 2);
                 adnpc.myStatInfo.defence = 15 + (adnpc.myStatInfo.strong / 10);
-                adnpc.myStatInfo.agility = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩증가
-                adnpc.myStatInfo.intellect = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
-                adnpc.myStatInfo.strong = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 1씩 증가
-                adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
+                adnpc.myStatInfo.charGrade = Grade(adnpc);
                 break;
             case 2: // 여자 마법사
+                adnpc.myStatInfo.profile = np[2];
                 adnpc.myStatInfo.name = "코리나";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.WIZARD;
-                adnpc.myStatInfo.charGrade = Grade(adnpc);
-                adnpc.myStatInfo.health = 10 + (adnpc.myStatInfo.strong / 10);
-                adnpc.myStatInfo.attack = 30 + (adnpc.myStatInfo.intellect / 2);
-                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 10);
                 adnpc.myStatInfo.agility = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 10씩증가
                 adnpc.myStatInfo.intellect = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.strong = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
+                adnpc.myStatInfo.health = 10 + (adnpc.myStatInfo.strong / 10);
+                adnpc.myStatInfo.attack = 30 + (adnpc.myStatInfo.intellect / 2);
+                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 10);
+                adnpc.myStatInfo.charGrade = Grade(adnpc);
                 break;
             case 3: // 남자 궁수
+                adnpc.myStatInfo.profile = np[3];
                 adnpc.myStatInfo.name = "브리오";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.ACHER;
-                adnpc.myStatInfo.charGrade = Grade(adnpc);
-                adnpc.myStatInfo.health = 20 + (adnpc.myStatInfo.strong / 5);
-                adnpc.myStatInfo.attack = 15 + (adnpc.myStatInfo.dexterity / 2);
-                adnpc.myStatInfo.defence = 15 + (adnpc.myStatInfo.strong / 10);
                 adnpc.myStatInfo.agility = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩증가
                 adnpc.myStatInfo.intellect = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.strong = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.dexterity = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩 증가
+                adnpc.myStatInfo.health = 20 + (adnpc.myStatInfo.strong / 5);
+                adnpc.myStatInfo.attack = 15 + (adnpc.myStatInfo.dexterity / 2);
+                adnpc.myStatInfo.defence = 15 + (adnpc.myStatInfo.strong / 10);
+                adnpc.myStatInfo.charGrade = Grade(adnpc);
                 break;
             case 4: // 남자 도적
+                adnpc.myStatInfo.profile = np[4];
                 adnpc.myStatInfo.name = "단테";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.THIEF;
-                adnpc.myStatInfo.charGrade = Grade(adnpc);
-                adnpc.myStatInfo.health = 20 + (adnpc.myStatInfo.strong / 5);
-                adnpc.myStatInfo.attack = 20 + (adnpc.myStatInfo.agility / 2);
-                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 10);
                 adnpc.myStatInfo.agility = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 10씩증가
                 adnpc.myStatInfo.intellect = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.strong = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
+                adnpc.myStatInfo.health = 20 + (adnpc.myStatInfo.strong / 5);
+                adnpc.myStatInfo.attack = 20 + (adnpc.myStatInfo.agility / 2);
+                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 10);
+                adnpc.myStatInfo.charGrade = Grade(adnpc);
                 break;
             case 5: // 남자 마법사
-                //adnpc.myStatInfo.profile = np[5];
+                adnpc.myStatInfo.profile = np[5];
                 adnpc.myStatInfo.name = "클락";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.WIZARD;
-                adnpc.myStatInfo.charGrade = Grade(adnpc);
-                adnpc.myStatInfo.health = 10 + (adnpc.myStatInfo.strong / 10);
-                adnpc.myStatInfo.attack = 30 + (adnpc.myStatInfo.intellect / 2);
-                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 10);
                 adnpc.myStatInfo.agility = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 10씩증가
                 adnpc.myStatInfo.intellect = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.strong = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.dexterity = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩 증가
+                adnpc.myStatInfo.health = 10 + (adnpc.myStatInfo.strong / 10);
+                adnpc.myStatInfo.attack = 30 + (adnpc.myStatInfo.intellect / 2);
+                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 10);
+                adnpc.myStatInfo.charGrade = Grade(adnpc);
                 break;
             case 6: // 남자 전사
+                adnpc.myStatInfo.profile = np[6];
                 adnpc.myStatInfo.name = "레오";
                 adnpc.myStatInfo.npcJob = CharState.NPCJOB.WARRIOR;
-                adnpc.myStatInfo.charGrade = Grade(adnpc);
-                adnpc.myStatInfo.health = 30 + (adnpc.myStatInfo.strong / 5);
-                adnpc.myStatInfo.attack = 10 + (adnpc.myStatInfo.strong / 5);
-                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 5);
                 adnpc.myStatInfo.agility = 30 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 2)), 0, 99999999); // 10당 10씩증가
                 adnpc.myStatInfo.intellect = 10 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 10)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.strong = 40 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 1)), 0, 99999999); // 10당 1씩 증가
                 adnpc.myStatInfo.dexterity = 20 + Mathf.Clamp(UnityEngine.Random.Range(0, (GameManager.Instance.Fame / 5)), 0, 99999999); // 10당 10씩 증가
+                adnpc.myStatInfo.health = 30 + (adnpc.myStatInfo.strong / 5);
+                adnpc.myStatInfo.attack = 10 + (adnpc.myStatInfo.strong / 5);
+                adnpc.myStatInfo.defence = 10 + (adnpc.myStatInfo.strong / 5);
+                adnpc.myStatInfo.charGrade = Grade(adnpc);
                 break;
         }
         return adnpc;
@@ -114,6 +124,44 @@ public class ADNpc : MonoBehaviour
     {
         NpcProfiles = Resources.LoadAll<Sprite>("Images/ProfileImages");
         myStat = RandomNPC(adtype, NpcProfiles).myStatInfo; // 스타트에서 캐릭터에서 스탯이 주어짐
+        GetComponent<Host>().myStat.RotSpeed = 360.0f;
+        GetComponent<Host>().myStat.MoveSpeed = 15.0f;
+
+        switch (adtype)
+        {
+            case 0: // 여자 궁수
+                GetComponent<Host>().myStat.AttackRange = 40.0f;
+                GetComponent<Host>().myStat.AttackDelay = 1.0f;
+                break;
+            case 1: // 여자 도적
+                GetComponent<Host>().myStat.AttackRange = 15.0f;
+                GetComponent<Host>().myStat.AttackDelay = 2.0f;
+                break;
+            case 2: // 여자 마법사
+                GetComponent<Host>().myStat.AttackRange = 30.0f;
+                GetComponent<Host>().myStat.AttackDelay = 1.0f;
+                break;
+            case 3: // 남자 궁수
+                GetComponent<Host>().myStat.AttackRange = 40.0f;
+                GetComponent<Host>().myStat.AttackDelay = 1.0f;
+                break;
+            case 4: // 남자 도적
+                GetComponent<Host>().myStat.AttackRange = 15.0f;
+                GetComponent<Host>().myStat.AttackDelay = 2.0f;
+                break;
+            case 5: // 남자 마법사
+                GetComponent<Host>().myStat.AttackRange = 30.0f;
+                GetComponent<Host>().myStat.AttackDelay = 1.0f;
+                break;
+            case 6: // 남자 전사
+                GetComponent<Host>().myStat.AttackRange = 15.0f;
+                GetComponent<Host>().myStat.AttackDelay = 2.0f;
+                break;
+        }
+        GetComponent<Host>().myStat.AP = myStat.attack;
+        GetComponent<Host>().myStat.MaxHp = myStat.health;
+        GetComponent<Host>().myStat.HP = myStat.health;
+        AI_Per.SetActive(false);
     }
 
     public static CharState.GRADE Grade(ADNPC npc)
@@ -135,7 +183,6 @@ public class ADNpc : MonoBehaviour
                 else if (npc.myStatInfo.strong <= 640 && npc.myStatInfo.strong > 140) // 명성이 600
                 {
                     grade = CharState.GRADE.E;
-                    Debug.Log("E");
                 }
                 else if (npc.myStatInfo.strong <= 1640 && npc.myStatInfo.strong > 640)
                 {
@@ -162,7 +209,6 @@ public class ADNpc : MonoBehaviour
                 else if (npc.myStatInfo.dexterity <= 640 && npc.myStatInfo.dexterity > 140) // 명성이 600
                 {
                     grade = CharState.GRADE.E;
-                    Debug.Log("E");
                 }
                 else if (npc.myStatInfo.dexterity <= 1640 && npc.myStatInfo.dexterity > 640)
                 {
@@ -192,7 +238,6 @@ public class ADNpc : MonoBehaviour
                 else if (npc.myStatInfo.intellect <= 640 && npc.myStatInfo.intellect > 140) // 명성이 600
                 {
                     grade = CharState.GRADE.E;
-                    Debug.Log("E");
                 }
                 else if (npc.myStatInfo.intellect <= 1640 && npc.myStatInfo.intellect > 640)
                 {
@@ -221,7 +266,6 @@ public class ADNpc : MonoBehaviour
                 else if (npc.myStatInfo.agility <= 640 && npc.myStatInfo.agility > 140) // 명성이 600
                 {
                     grade = CharState.GRADE.E;
-                    Debug.Log("E");
                 }
                 else if (npc.myStatInfo.agility <= 1640 && npc.myStatInfo.agility > 640)
                 {

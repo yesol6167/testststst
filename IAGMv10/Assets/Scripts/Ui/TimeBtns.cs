@@ -24,23 +24,23 @@ public class TimeBtns : Singleton<TimeBtns>
     }
     public void OnFastPlay()
     {
-            Time.timeScale = 2;
-            FastButton.color = ChangeColor;
-            PlayButton.color = OrgColor;
-            PauseButton.color = OrgColor;
-            returncheck = false;
+        Time.timeScale = 2;
+        FastButton.color = ChangeColor;
+        PlayButton.color = OrgColor;
+        PauseButton.color = OrgColor;
+        returncheck = false;
     }
     public void OnPlay()
     {
-            Time.timeScale = 1;
-            FastButton.color = OrgColor;
-            PlayButton.color = ChangeColor;
-            PauseButton.color = OrgColor;
-            returncheck = true;
+        Time.timeScale = 1;
+        FastButton.color = OrgColor;
+        PlayButton.color = ChangeColor;
+        PauseButton.color = OrgColor;
+        returncheck = true;
     }
     public void OnPause()
     {
-        if(pausecheck == false) // Ã³À½ ´­·¶À» ¶§
+        if (pausecheck == false) // Ã³À½ ´­·¶À» ¶§
         {
             Time.timeScale = 0;
             PauseButton.color = ChangeColor;

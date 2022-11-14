@@ -14,7 +14,7 @@ using Unity.VisualScripting.FullSerializer;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 
-public class Host : MonoBehaviour
+public class Host : MonoBehaviour, IBattle
 {
     GameObject Icon;
 
@@ -22,6 +22,13 @@ public class Host : MonoBehaviour
     public static Host inst = null;
 
     public GameObject Quest; // 프리팹 둘은 연결 >> 퀘스트 완료 >> 완료되었으면 quest 프리팹을 파괴
+    // 화살 위치 화살
+    public Transform myBow;
+    public GameObject orgArrow;
+
+    //마법 이펙트 
+    public GameObject magiceff;
+    public Transform trs;
 
     //NpcClock,QuestImoticon
     public Transform spawnPoints;
@@ -42,11 +49,13 @@ public class Host : MonoBehaviour
 
     public int People; // 사람 구분
 
+    public int FarmAni;
     //네비게이션
     NavMeshAgent agent;
     [SerializeField] Vector3 lob; // 로비 도착지점
     [SerializeField] Vector3 res; // 식당 도착지점
     [SerializeField] Vector3 mot; // 여관 도착지점
+    [SerializeField] Vector3 tel; // 텔레포트 위치
 
     [SerializeField] Transform Exit;
 
@@ -56,17 +65,36 @@ public class Host : MonoBehaviour
    
     public enum STATE
     {
-        Moving, Wait, Order, Eating, Sleeping, Exit
+        Create, Idle, Moving, Wait, Order, Eating, Sleeping, Battle, Exit ,Farming
     }
-    public STATE myState = default;
-    public CharacterStat stat;
+    public STATE myState = STATE.Create;
+    //자동 전투 관련
+    public CharacterStat myStat;
+    List<IBattle> myAttackers = new List<IBattle>();
 
+    Transform _target = null;
+    Transform myTarget
+    {
+        get => _target;
+        set
+        {
+            _target = value;
+            if (_target != null) _target.GetComponent<IBattle>()?.AddAttacker(this);
+        }
+    }
+
+    //위까지 전투 관련
     void ChangeState(STATE s)
     {
         if (myState == s) return;
         myState = s;
         switch (myState)
         {
+            case STATE.Create:
+                break;
+            case STATE.Idle:
+                StopAllCoroutines();
+                break;
             case STATE.Moving: // 윤섭
                 StopAllCoroutines();
                 agent.ResetPath(); // Wait 상태에서 Moving으로 바뀔때 목적지를 초기화
@@ -119,6 +147,23 @@ public class Host : MonoBehaviour
                 GetComponent<Animator>().SetTrigger("IsLaying");
                 Invoke("GoExit", 5);
                 break;
+            case STATE.Battle:
+                AttackTarget(myTarget);
+                break;
+                case STATE.Farming:
+                if(FarmAni == 0)
+                {
+                    GetComponent<Animator>().SetTrigger("Pick");
+                }
+                else if(FarmAni == 1)
+                {
+                    GetComponent<Animator>().SetTrigger("Find");
+                }
+                else if(FarmAni == 2)
+                {
+                    GetComponent<Animator>().SetTrigger("Pick");
+                }
+                break;
             case STATE.Exit:
                 StopAllCoroutines();
                 LineChk = false; // 줄 서있는 상태가 아님
@@ -169,6 +214,10 @@ public class Host : MonoBehaviour
     {
         switch (myState)
         {
+            case STATE.Create:
+                break;
+            case STATE.Idle:
+                break;
             case STATE.Moving:
                 if(purpose == 0)
                 {
@@ -186,6 +235,11 @@ public class Host : MonoBehaviour
                 {
                     ChangeState(STATE.Exit);
                 }
+                break;
+            case STATE.Battle:
+                StopCoroutine(ForwardCheck());
+                break;
+            case STATE.Farming:
                 break;
             case STATE.Exit:
                 transform.SetAsLastSibling();
@@ -320,7 +374,9 @@ public class Host : MonoBehaviour
     IEnumerator FinishQuest(float t) // 재방문
     {
         yield return new WaitForSeconds(t);
+        GetComponent<ADNpc>().AI_Per.SetActive(false);
         SpawnManager.Instance.Teleport(gameObject);
+        GetComponent<Animator>().SetBool("IsMoving", true);
         Clockchk = false;
         onSmile = false;
         ChangeState(STATE.Moving);
@@ -384,5 +440,164 @@ public class Host : MonoBehaviour
                 Icon.GetComponent<PubMotelIcon>().myIconZone = myIconZone;
                 break;
         }
+    }
+    //자동전투
+    protected void AttackTarget(Transform target)
+    {
+        StopAllCoroutines();
+        StartCoroutine(AttackingTarget(target, myStat.AttackRange, myStat.AttackDelay));
+    }
+    public void OnDamage(float dmg)
+    {
+        myStat.HP -= dmg;
+        if (Mathf.Approximately(myStat.HP, 0.0f))
+        {
+            StopAllCoroutines();
+            foreach (IBattle ib in myAttackers)
+            {
+                ib.DeadMessage(transform);
+            }
+            GetComponent<Animator>().SetTrigger("Dead");
+            StartCoroutine(FinishQuest(2.0f));
+        }
+        else
+        {
+            GetComponent<Animator>().SetTrigger("Damage");
+        }
+    }
+
+    IEnumerator AttackingTarget(Transform target, float AttackRange, float AttackDelay)
+    {
+        float playTime = 0.0f;
+        float delta = 0.0f;
+        while (target != null)
+        {
+            if (!GetComponent<Animator>().GetBool("IsAttacking")) playTime += Time.deltaTime;
+            //이동
+            Vector3 dir = target.position - transform.position;
+            float dist = dir.magnitude;
+            if (dist > myStat.AttackRange)
+            {
+                GetComponent<Animator>().SetBool("IsMoving", true);
+                dir.Normalize();
+                delta = myStat.MoveSpeed * Time.deltaTime;
+                if (delta > dist)
+                {
+                    delta = dist;
+                }
+                transform.Translate(dir * delta, Space.World);
+            }
+            else
+            {
+                GetComponent<Animator>().SetBool("IsMoving", false);
+                if (playTime >= myStat.AttackDelay)
+                {
+                    //공격
+                    playTime = 0.0f;
+
+                    switch (GetComponent<ADNpc>().adtype)//직업별 애니메이션 실행
+                    {
+                        case 0: // 여자 궁수
+                            GetComponent<Animator>().SetTrigger("ArrowAttack");
+                            CreateArrow();
+                            break;
+                        case 1: // 여자 도적
+                            GetComponent<Animator>().SetTrigger("ThiefAttack");
+                            break;
+                        case 2: // 여자 마법사
+                            GetComponent<Animator>().SetTrigger("MagicAttack");
+                            break;
+                        case 3: // 남자 궁수
+                            GetComponent<Animator>().SetTrigger("ArrowAttack");
+                            CreateArrow();
+                            break;
+                        case 4: // 남자 도적
+                            GetComponent<Animator>().SetTrigger("ThiefAttack");
+                            break;
+                        case 5: // 남자 마법사
+                            GetComponent<Animator>().SetTrigger("MagicAttack");
+                            break;
+                        case 6: // 남자 전사
+                            GetComponent<Animator>().SetTrigger("WarriorAttack");
+                            break;
+                    }
+                }
+            }
+            //회전
+            delta = myStat.RotSpeed * Time.deltaTime;
+            float Angle = Vector3.Angle(dir, transform.forward);
+            float rotDir = 1.0f;
+            if (Vector3.Dot(transform.right, dir) < 0.0f)
+            {
+                rotDir = -rotDir;
+            }
+            if (delta > Angle)
+            {
+                delta = Angle;
+            }
+            transform.Rotate(Vector3.up * delta * rotDir, Space.World);
+            yield return null;
+        }
+        GetComponent<Animator>().SetBool("IsMoving", false);
+    }
+    public void AttackTarget()
+    {
+        myTarget.GetComponent<IBattle>()?.OnDamage(myStat.AP);
+    }
+
+    public bool IsLive()
+    {
+        return Mathf.Approximately(myStat.HP, 0.0f);
+    }
+
+    public void FindTarget(Transform target)
+    {
+        myTarget = target;
+        StopAllCoroutines();
+        ChangeState(STATE.Battle);
+    }
+
+    public void LostTarget()
+    {
+        myTarget = null;
+        StopAllCoroutines();
+        GetComponent<Animator>().SetBool("IsMoving", false);
+        ChangeState(STATE.Idle); // 상태 이상할 시 Idle 추가
+    }
+
+    public void AddAttacker(IBattle ib)
+    {
+        myAttackers.Add(ib);
+    }
+
+    public void DeadMessage(Transform tr)
+    {
+        if (tr == myTarget)
+        {
+            LostTarget();
+            StartCoroutine(FinishQuest(2.0f));
+        }
+    }
+
+    public void CreateArrow() // 화살 생성
+    {
+        GameObject obj = Instantiate(orgArrow, myBow);
+        obj.GetComponent<Arrow>().myTarget = myTarget;
+        obj.GetComponent<Arrow>().OnFire();
+    }
+    public void MagicImpact()
+    {
+        Instantiate(magiceff, myTarget.position + myTarget.transform.up * 5.0f, Quaternion.identity);
+    }
+    public void FarmReturn()
+    {
+        SpawnManager.Instance.Teleport(gameObject);
+        ChangeState(STATE.Moving);
+        onSmile = false;
+        Clockchk = false;
+    }
+    public void StateFarming()
+    {
+        ChangeState(STATE.Farming);
     }
 }

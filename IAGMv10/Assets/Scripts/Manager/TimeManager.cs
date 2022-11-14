@@ -15,14 +15,14 @@ public class TimeManager : Singleton<TimeManager>
     // 시계 회전
     [SerializeField]
     public Transform myRotateArea;
-    
+
     // ChangeDay
     public TMPro.TMP_Text myDayText;
-    
+
     // ChangeMonth
     int OneMonth;
     public TMPro.TMP_Text myMonthText;
-    
+
     // ChangeSeason
     int OneSeason;
     public GameObject Spring;
@@ -38,7 +38,7 @@ public class TimeManager : Singleton<TimeManager>
 
     new private void Awake()
     {
-        
+
     }
 
     void Start()
@@ -58,14 +58,14 @@ public class TimeManager : Singleton<TimeManager>
         StartCoroutine(ChangeMonth(OneMonth / timeSpeed));
 
         // ChangeSeason
-        OneSeason = OneMonth * 3; 
+        OneSeason = OneMonth * 3;
         StartCoroutine(ChangeSeason(OneSeason / timeSpeed));
     }
 
     void Update()
     {
         temp -= Time.deltaTime;
-        if( temp <= CloseReadyTime)
+        if (temp <= CloseReadyTime)
         {
             OnCloseReady();
             if (temp <= 0)
@@ -172,7 +172,7 @@ public class TimeManager : Singleton<TimeManager>
     IEnumerator ChangeDay(int Day)
     {
         yield return new WaitForSeconds(Day);
-        
+
         DayCount++;
 
         StartCoroutine(ChangeDay(Day));

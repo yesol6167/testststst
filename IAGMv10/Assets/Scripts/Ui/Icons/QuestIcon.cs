@@ -15,11 +15,10 @@ public class QuestIcon : MonoBehaviour, IBeginDragHandler, IDragHandler
     public GameObject hostobj;
     bool VLchk; // 마을사람 or 모험가 체크용
 
-
     // Start is called before the first frame update
     void Start()
     {
-
+        StartCoroutine(GetOut());
     }
 
     // Update is called once per frame
@@ -29,11 +28,21 @@ public class QuestIcon : MonoBehaviour, IBeginDragHandler, IDragHandler
         if (myIconZone != null)
         {
             transform.position = Camera.main.WorldToScreenPoint(myIconZone.position);
+            //-나중에 이부분 가독성 좋게 수정할 방법 찾기-
+            //myTarget.parent.parent.parent.parent.parent.parent.parent.parent.gameObject = host;
             hostobj = myIconZone.parent.parent.parent.parent.parent.parent.parent.parent.gameObject;
             VLchk = hostobj.GetComponent<Host>().VLchk;// 호스트 말고 스폰매니저에서 바로 받아오기
             npcQuest = VLchk ? hostobj.GetComponent<VLNpc>().myQuest : hostobj.GetComponent<QuestInformation>().myQuest; // 삼항식으로 마을사람 참, 모험가 거짓임
         }
     }
+
+    IEnumerator GetOut()
+    {
+        yield return new WaitForSeconds(15.0f);
+        hostobj.GetComponent<Host>().onAngry = true;
+        Destroy(gameObject);
+    }
+
     public void ShowRequestWindow() //퀘스트 버튼 누르면 퀘스트 요청서 생성
     {
         GameObject RQwindow;
@@ -63,7 +72,7 @@ public class QuestIcon : MonoBehaviour, IBeginDragHandler, IDragHandler
             //RQwindow 오브젝트의 QuestInformation 스크립트의 myQuest 변수에 npcQuest를 넣는다.
             RQwindow.GetComponent<QuestInformation>().myNpc = hostobj;
         }
-        RQwindow.GetComponent<QuestInformation>().ShowQuest(npcQuest);
+        RQwindow.GetComponent<QuestInformation>().ShowQuest(npcQuest, hostobj);
         //UiCanvas 밑에 생성
         RQwindow.transform.SetAsFirstSibling();
         RQwindow.SetActive(true);

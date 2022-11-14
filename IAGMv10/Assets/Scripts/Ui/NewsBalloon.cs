@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
 public class NewsBalloon : MonoBehaviour
 {
     float NewsTime;
+    public TMP_Text myText;
     
     void Update()
     {
@@ -14,5 +16,10 @@ public class NewsBalloon : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SetText(string msg)
+    {
+        myText.text = msg;
     }
 }

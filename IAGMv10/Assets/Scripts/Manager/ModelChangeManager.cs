@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class ModelChangeManager : Singleton<ModelChangeManager>
+public class ModelChangeManager : MonoBehaviour
 {
     public Material[] ColorPack;
 
-     void Awake()
+    void Awake()
     {
         ColorPack = Resources.LoadAll<Material>("Material/NpcMaterials");
     }
@@ -22,7 +22,7 @@ public class ModelChangeManager : Singleton<ModelChangeManager>
         Renderer Rd = GetComponentInChildren<SkinnedMeshRenderer>();
         Material[] mat = Rd.sharedMaterials;
 
-        mat[0] = ModelChangeManager.Instance.ColorPack[ClothNum];
+        mat[0] = ColorPack[ClothNum];
         
         Rd.materials = mat;
     }

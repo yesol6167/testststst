@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Diagnostics;
 
-public class QuestInformation : MonoBehaviour 
+public class QuestInformation : MonoBehaviour // ÇØ´ç ½ºÅ©¸³Æ®´Â ¸ğÇè°¡¿Í Äù½ºÆ® ¿äÃ»¼­¿Í °°ÀÌ »ç¿ëµÊ
 {
     public GameObject ParentOBJ;
     public GameObject ChildOBJ;
-    public GameObject NewsBArea;
+    public GameObject NewsBArea; // NewsBalloonÀÌ ÀÚ½ÄÀ¸·Î »ı¼ºµÇ´Â UiCanvas¾ÈÀÇ ºÎ¸ğ ¿ÀºêÁ§Æ®
 
     public Quest.QuestInfo myQuest;
     public TMP_Text Questname;
@@ -17,44 +18,37 @@ public class QuestInformation : MonoBehaviour
     public TMP_Text reward;
     public TMP_Text Result;
     //string result;
-    bool chk;
-    public GameObject myNpc;
+    bool chk; // ¼º°ø ½ÇÆĞ ¿©ºÎ Ã¼Å©
+    public GameObject myNpc; // Äù½ºÆ®¸¦ ÁØ npc
     public int People;
     public bool IsQuestchk;
-    public bool NpcChk = true; 
+    public bool NpcChk = true; // ÇØ´ç ½ºÅ©¸³Æ®°¡ ¹ÙÀÎµù µÇ¾îÀÖ´Â ¿ÀºêÁ§Æ®°¡ ¸ğÇè°¡ÀÎÁö ¾Æ´Ï¸é UiÇÁ¸®ÆÕ ÀÎÁö ±¸ºĞ (false=¿äÃ»¼­/true=¸ğÇè°¡)
 
-    GameObject WindowArea;
+    GameObject WindowArea; // AdDataWindow°¡ ÀÚ½ÄÀ¸·Î »ı¼ºµÇ´Â UiCanvas¾ÈÀÇ ºÎ¸ğ ¿ÀºêÁ§Æ®
+
+    AdDataWindow ADW;
 
     public void Start()
     {
-        WindowArea = GameObject.Find("WindowArea");
-        //UIï¿½Å´ï¿½ï¿½ï¿½
-        if(NpcChk == false)
+        WindowArea = UIManager.Inst.WindowArea;
+        //UI¸Å´ÏÀú
+        if(NpcChk == false || this.gameObject.GetComponent<Host>().purpose == 0) // UiÇÁ¸®ÆÕÀÏ °æ¿ì
         {
-            ParentOBJ = GameObject.Find("SpawnPointQ");
-            if(ParentOBJ.transform.childCount > 0)
-            {
-                ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
-            }
+            ParentOBJ = UIManager.Inst.ParentOBJ;
+            ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
         }
-        else // ï¿½ï¿½ï¿½è°¡ï¿½ï¿½ ï¿½ï¿½ï¿½
-        {
-            if(this.gameObject.GetComponent<Host>().purpose == 0)
-            {
-                ParentOBJ = GameObject.Find("SpawnPointQ");
-                ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
-            }
-        }
-        NewsBArea = GameObject.Find("NewsBArea");
+        NewsBArea = UIManager.Inst.NewsBArea;
+
     }
-    public void ShowQuest(Quest.QuestInfo npc)
+    public void ShowQuest(Quest.QuestInfo npc, GameObject host)
     {
         grade.text = npc.questgrade.ToString();
         Name.text = "[" + npc.questname + "]";
         if (IsQuestchk)
         {
+            //¸ğÇè°¡ º¸°í¼­ ¿ë
             int rnd = Random.Range(0, 10);
-            if (rnd > 4)
+            if (host.GetComponent<QuestInformation>().myQuest.questname == "Ã¤Áı" ? (rnd > 5) : host.GetComponent<Host>().myStat.HP != 0)
             {
                 chk = true;
             }
@@ -62,38 +56,61 @@ public class QuestInformation : MonoBehaviour
             {
                 chk = false;
             }
-            Result.text = chk ? "[ì„±ê³µ]" : "[ì‹¤íŒ¨]"; 
+            //º¸°í¼­ ¿ë
+            Result.text = chk ? "[¼º°ø]" : "[½ÇÆĞ]"; // ¼º°ø ½ÇÆĞ ¿©ºÎ Ã¼Å©ÈÄ º¯°æ
         }
         else
         {
+            //Äù½ºÆ® ½ÅÃ»¿ë
             info.text = "\"" + npc.information + "\"";
         }
-        reward.text = "[ê³¨ë“œ : " + npc.rewardgold.ToString() + "G]" + "\n" + "[í‰íŒ : " + npc.rewardfame.ToString() + "P]";
+        reward.text = "[°ñµå : " + npc.rewardgold.ToString() + "G]" + "\n" + "[ÆòÆÇ : " + npc.rewardfame.ToString() + "P]";
     }
 
 
-    public void AddQuest() 
+    public void AddQuest() // ½Â³«
     {
-        if (People == 0) 
+        if (SpawnManager.Instance.EndTime < SpawnManager.Instance.DeadLine)
         {
-            QuestManager.Instance.PostedQuest(myQuest);
+            if (People == 0) // ¸¶À»»ç¶÷
+            {
+                QuestManager.Instance.PostedQuest(myQuest);
+                GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), NewsBArea.transform) as GameObject;
+                obj.GetComponent<NewsBalloon>().SetText("»õ·Î¿î Äù½ºÆ®°¡ \nÃß°¡µÇ¾ú½À´Ï´Ù.");
+            }
+            else // ¸ğÇè°¡
+            {
+                QuestManager.Instance.ProgressQuest(myQuest, ChildOBJ);
+                ChildOBJ.GetComponent<Host>().Questing = true;
+            }
+            ChildOBJ.GetComponent<Host>().onSmile = true;
         }
-        else 
+        else
         {
-            QuestManager.Instance.ProgressQuest(myQuest, ChildOBJ);
-            ChildOBJ.GetComponent<Host>().Questing = true;
+            //¸Ş½ÃÁö Ãâ·Â
+            GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), NewsBArea.transform) as GameObject;
+            obj.GetComponent<NewsBalloon>().SetText("¸¶°¨½Ã°£¿¡´Â \n»õ·Î¿î Äù½ºÆ®¸¦ \nÃß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù.");
+            ChildOBJ.GetComponent<Host>().onAngry = true;
         }
-        ChildOBJ.GetComponent<Host>().onSmile = true;
     }
 
     public void onDestroy()
     {
+        if (ADW != null)
+        {
+            Destroy(ADW.gameObject);
+        }
         Destroy(gameObject);
     }
 
     public void onQuestRfuse()
     {
         ChildOBJ.GetComponent<Host>().onAngry = true;
+        if(People != 0)
+        {
+            GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), NewsBArea.transform) as GameObject;
+            obj.GetComponent<NewsBalloon>().SetText("Äù½ºÆ®°¡ \n¹İÈ¯µÇ¾ú½À´Ï´Ù.");
+        }
     }
     public void AddReward()
     {
@@ -101,26 +118,32 @@ public class QuestInformation : MonoBehaviour
         Destroy(ChildOBJ.GetComponent<Host>().Quest.gameObject);
         QuestManager.Instance.EndQuest(myQuest);
         if (chk)
-        {
+        { // ¼º°ø½Ã Áõ°¡ ¿¬»ê
             GameManager.Instance.ChangeGold(myQuest.rewardgold);
             GameManager.Instance.ChangeFame(myQuest.rewardfame);
             ChildOBJ.GetComponent<Host>().onSmile = true;
         }
         else
-        { 
+        { // ½ÇÆĞ½Ã °¨¼Ò ¿¬»ê
             GameManager.Instance.ChangeGold(-myQuest.rewardgold);
             GameManager.Instance.ChangeFame(-myQuest.rewardfame);
             ChildOBJ.GetComponent<Host>().onAngry = true;
         }
-        Destroy(gameObject); 
+        //ÇöÀç Äù½ºÆ® ¸®½ºÆ®¸¦ ¿Ï·á Äù½ºÆ® ¸®½ºÆ®¿¡ Ãß°¡
+        Destroy(gameObject); // È®ÀÎ½Ã ¿¬»ê ÈÄ ÆäÀÌÁö »èÁ¦
 
     }
-    public void onNewsBalloon() 
+    /*public void onNewsBalloon() // ´º½º¸»Ç³¼± »ı¼º "»õ·Î¿î Äù½ºÆ®°¡ Ãß°¡µÇ¾ú½À´Ï´Ù."
     {
         GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), NewsBArea.transform) as GameObject;
-    }
-    public void onAdDataWindow() 
+        obj.GetComponent<NewsBalloon>().SetText("»õ·Î¿î Äù½ºÆ®°¡ \nÃß°¡µÇ¾ú½À´Ï´Ù.");
+    }*/
+    public void onAdDataWindow() // ¸ğÇè°¡ Á¤º¸Ã¢ ¶ç¿ì±â
     {
-        GameObject obj = Instantiate(Resources.Load("UiPrefabs/AdDataWindow"), WindowArea.transform) as GameObject;
+        if (ADW == null)
+        {
+            GameObject obj = Instantiate(Resources.Load("UiPrefabs/AdDataWindow"), WindowArea.transform) as GameObject;
+            ADW = obj.GetComponent<AdDataWindow>();
+        }
     }
 }

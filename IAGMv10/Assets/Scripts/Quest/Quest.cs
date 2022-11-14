@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[Serializable]
 public class Quest : MonoBehaviour
 {
     public enum QuestGRADE
@@ -49,7 +48,6 @@ public class Quest : MonoBehaviour
             set => Rewards.fame = value;
         }
     }
-    [Serializable]
     public struct Reward
     {
         [SerializeField] int Gold;

@@ -10,7 +10,7 @@ using static CharState;
 public class QuestManager : Singleton<QuestManager>
 {
     public List<Quest.QuestInfo> RQlist = new List<Quest.QuestInfo>(); //진행X 퀘스트 목록
-    public List<Quest.QuestInfo> PQlist = new List<Quest.QuestInfo>(); //진행O 퀘스트 목록
+    //public List<Quest.QuestInfo> PQlist = new List<Quest.QuestInfo>(); //진행O 퀘스트 목록
     public List<Quest.QuestInfo> FQlist = new List<Quest.QuestInfo>(); //완료된 퀘스트 목록
     public GameObject RQuest; // 연결 위치
     public GameObject PQuest; // 연결 위치
@@ -19,19 +19,17 @@ public class QuestManager : Singleton<QuestManager>
     GameObject PQ;
     GameObject FQ;
     TMP_Text grade;
-    TMP_Text name;
+    TMP_Text Name;
     TMP_Text info;
     TMP_Text reward;
     public Quest.QuestInfo npcQuest;
 
     List<Quest> questlist = new List<Quest>();
     //받은 퀘스트 목록 >> 마을 사람 아이콘 클릭 시
-
-    private void Awake()
+    void Update()
     {
-        
-    }
 
+    }
     public void PostedQuest(Quest.QuestInfo npc)
     {
         RQlist.Add(npc);
@@ -50,10 +48,11 @@ public class QuestManager : Singleton<QuestManager>
 
     public void ProgressQuest(Quest.QuestInfo npc, GameObject host)
     {
-        SpawnManager.Instance.hcount--;
+        //SpawnManager.Instance.hcount--;
         SpawnManager.Instance.ADcount++;
-        PQlist.Add(npc);
+        //PQlist.Add(npc);
         GameObject PQ = Instantiate(Resources.Load("Prefabs/ProgressQuest"), PQuest.transform) as GameObject; // PQ랑 호스트 
+        PQ.GetComponent<QuestView>().host = host;
         host.GetComponent<Host>().Quest = PQ;
         PQ.GetComponentInChildren<QuestInformation>().Questname.text = npc.questname;
 
@@ -69,4 +68,15 @@ public class QuestManager : Singleton<QuestManager>
 
     //모험가에게 줄 퀘스트 목록 >> 받은 퀘스트 목록에서 모험가에게 퀘스트 분배
     //완료된 퀘스트 목록 >> 모험가 재방문시 퀘스트 성공 실패 여부 확인에 따라 완료
+
+    public void EndQuestClear()
+    {
+        Debug.Log(FQlist.Count);
+        FQlist.Clear();
+        for (int i = 0; i < FQuest.transform.childCount; i++)
+        {
+            Destroy(FQuest.transform.GetChild(i).gameObject);
+        }
+        Debug.Log(FQlist.Count);
+    }
 }

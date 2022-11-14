@@ -18,11 +18,24 @@ public class PubMotelIcon : MonoBehaviour // Bed + Meat + Sleep + Eat æ∆¿Ãƒ‹
     ChairBedChk bedchairvalue;
     public bool Pullchk;
 
+    void Start()
+    {
+        StartCoroutine(GetOut());
+    }
+
     void Update()
     {
         Vector3 pos = Camera.main.WorldToScreenPoint(myIconZone.position);
         transform.position = pos;
     }
+
+    IEnumerator GetOut()
+    {
+        yield return new WaitForSeconds(15.0f);
+        myHost.GetComponent<Host>().onAngry = true;
+        Destroy(gameObject);
+    }
+
     public void delete()
     {
         Destroy(gameObject);
