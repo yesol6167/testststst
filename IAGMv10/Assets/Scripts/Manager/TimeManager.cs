@@ -2,18 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class TimeManager : MonoBehaviour
+public class TimeManager : Singleton<TimeManager>
 {
     public int timeSpeed = 1; // 2는 2배로 빠르게
+    public int OneDay = 30;
 
-    public int OneDay = 600;
     public int DayCount = 1;
     public int MonthCount = 1;
     public int SeasonCount = 1;
     // 날짜 설정 가능 단, 각 계절의 시작일만 설정 가능 ex) 봄(1) 3월 1일 / 여름(2) 6월 1일 / 가을(3) 9월 1일 / 겨울(4) 12월 1일
 
     // 시계 회전
+    [SerializeField]
     public Transform myRotateArea;
     
     // ChangeDay
@@ -30,8 +30,21 @@ public class TimeManager : MonoBehaviour
     public GameObject Fall;
     public GameObject Winter;
 
+    public GameObject DayReportWindow;
+    public GameObject CloseNotice;
+    public bool GuildClose = false;
+    public float temp;
+    public int CloseReadyTime = 10; // 마감준비시간
+
+    new private void Awake()
+    {
+        
+    }
+
     void Start()
     {
+        temp = OneDay;
+
         // 시계 회전
         StartCoroutine(ArrowRotate(OneDay / timeSpeed));
 
@@ -51,6 +64,21 @@ public class TimeManager : MonoBehaviour
 
     void Update()
     {
+        temp -= Time.deltaTime;
+        if( temp <= CloseReadyTime)
+        {
+            OnCloseReady();
+            if (temp <= 0)
+            {
+                GuildClose = true;
+            }
+        }
+
+        if (GuildClose)
+        {
+            OnDayReport();
+        }
+
         if (DayCount > 30)
         {
             DayCount = 1;
@@ -166,5 +194,17 @@ public class TimeManager : MonoBehaviour
         SeasonCount++;
 
         StartCoroutine(ChangeSeason(Season));
+    }
+
+    public void OnDayReport()
+    {
+        Time.timeScale = 0;
+        CloseNotice.SetActive(false);
+        DayReportWindow.SetActive(true);
+    }
+
+    public void OnCloseReady()
+    {
+        CloseNotice.SetActive(true);
     }
 }

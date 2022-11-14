@@ -1,39 +1,100 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
-
-public class PlayerData
-{
-    public int Gold;
-}
+using System.Runtime.Serialization.Formatters.Binary;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
-    public PlayerData nowData = new PlayerData();
+    public int SlotNum;
+    public string pathSave;
+    public string pathLoad;
 
-    public string path;
-    public int nowSlot;
-
-    private void Awake()
+    void Awake()
     {
-        path = Application.persistentDataPath + "/Save"; // 저장 경로
+        pathSave = Path.Combine(Application.dataPath, "Save", "Save");
+        pathLoad = Path.Combine(Application.dataPath, "Load", "Load.bin");
     }
 
-    public void SaveData(int i)
+    private void Start()
     {
-        nowData.Gold = i;
-        string data = JsonUtility.ToJson(nowData); // 제이슨으로 변환
-        File.WriteAllText(path + nowSlot.ToString(), data); // 제이슨을 저장
-    }
-    public void LoadData()
-    {
-        string data = File.ReadAllText(path + nowSlot.ToString()); // 제이슨을 불러오기
-        nowData = JsonUtility.FromJson<PlayerData>(data); // 제이슨 -> PlayerData 형식으로 변환
+        if (File.Exists(pathLoad))// 로드 
+        {
+            SaveData save = Load_pathLoad();
+            Data_to_Game(save); // [LODE] 데이터를 게임에 적용
+        }
     }
 
-    public void DataClear()
+
+    
+
+    public void Save(SaveData data)
     {
-        nowSlot = -1;
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream stream = File.Create(pathSave + $"{SlotNum}.bin");
+        formatter.Serialize(stream, data);
+        stream.Close();
     }
+
+    public SaveData Load()
+    {
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = File.OpenRead(pathSave + $"{SlotNum}.bin");
+            SaveData data = (SaveData)formatter.Deserialize(stream);
+            stream.Close();
+            return data;
+        }
+        catch // 저장된 파일이 없을 때
+        {
+            return default;
+        }
+    }
+
+    public void Save_pathLoad()
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream stream = File.Create(pathLoad);
+        formatter.Serialize(stream, Load());
+        stream.Close();
+    }
+
+    public SaveData Load_pathLoad()
+    {
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = File.OpenRead(pathLoad);
+            SaveData data = (SaveData)formatter.Deserialize(stream);
+            stream.Close();
+            return data;
+        }
+        catch // 저장된 파일이 없을 때
+        {
+            return default;
+        }
+    }
+
+    public void Data_to_Game(SaveData save) // 데이터를 게임에 적용
+    {
+        GameManager.Instance.Gold = save.Gold;
+        GameManager.Instance.Fame = save.Fame;
+        TimeManager.Instance.DayCount = save.Day;
+        TimeManager.Instance.MonthCount = save.Month;
+        TimeManager.Instance.SeasonCount = save.Season;
+        
+        RQListLoad(save);
+    }
+
+    public void RQListLoad(SaveData save)
+    {
+        Quest.QuestInfo[] RQarray = save.RQList.ToArray();
+        for (int i = 0; i < RQarray.Length; i++)
+        {
+            QuestManager.Instance.PostedQuest(RQarray[i]);
+        }
+    }
+
 }

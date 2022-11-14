@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TimeBtns : MonoBehaviour
+public class TimeBtns : Singleton<TimeBtns>
 {
     public Color OrgColor;
     public Color ChangeColor;
@@ -19,6 +19,7 @@ public class TimeBtns : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1;
         PlayButton.color = ChangeColor;
     }
     public void OnFastPlay()

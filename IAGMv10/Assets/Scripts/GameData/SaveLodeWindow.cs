@@ -2,51 +2,102 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 using UnityEngine.SceneManagement;
 
 public class SaveLodeWindow : MonoBehaviour
 {
+    public GameObject NoTouch;
     public TMP_Text[] Slots;
     public TMP_Text SelectedSlot;
-    public string SavedSlot = "ÀúÀåµÈ ½½·Ô";
+    public Color ChangeColor;
+    Color OrgColor = Color.white;
 
-    bool[] savefiles = new bool[3];
+    string DayText;
+    string MonthText;
+    string SeasonText;
+
 
     private void Start()
     {
-        // ÀúÀåµÈ ÆÄÀÏÀÌ ÀÖ´ÂÁö °Ë»ç -> ÀÖÀ¸¸é ½½·ÔÀÇ ÀÌ¸§ ¹Ù²ãÁÖ±â
-        for(int i = 0; i < Slots.Length; i++)
+        for (int i = 0; i < Slots.Length; i++)
         {
-            if(File.Exists(DataManager.Instance.path + $"{i}")) // °°Àº ¹®ÀÚ·Î µÈ ÆÄÀÏÀÇ ÀÌ¸§ÀÌ ÀÖÀ» °æ¿ì
+            if (File.Exists(Path.Combine(Application.dataPath, "Save", $"Save{i}.bin"))) // ìŠ¬ë¡¯ë“¤ì— ì €ì¥ëœ ì´ë¦„ë“¤ ë¶ˆëŸ¬ì˜¤ê¸°
             {
-                savefiles[i] = true;
-                DataManager.Instance.nowSlot = i;
-                DataManager.Instance.LoadData();
-                GameManager.Instance.Gold = DataManager.Instance.nowData.Gold;
-                Slots[i].text = SavedSlot;
+                DataManager.Instance.SlotNum = i;
+                SaveData save = new SaveData();
+                save = DataManager.Instance.Load();
+                SeasonTextSet(save);
+                Slots[i].text = $"{SeasonText}-{save.Month}ì›”-{save.Day}ì¼"; ;
             }
         }
-        DataManager.Instance.DataClear();
-        // ºÒ·¯¿À±â ±¸Çö ¿Ï·á -> ¿¹»ó¿À·ù: 3°³´Ù ÀúÀåµÈ ÆÄÀÏÀÏ °æ¿ì -> 3¹øÂ° ½½·ÔÀÇ µ·ÀÌ ºÒ·¯¿ÍÁü -> ÇØ°á¹æ¹ı °¡Àå ¸¶Áö¸·À¸·Î ÀúÀåµÈ ½½·ÔÀ» ±¸ºĞ?
+    }
+    public void SelectSlot(int slotnum)
+    {
+        DataManager.Instance.SlotNum = slotnum;
+        SelectedSlot = Slots[slotnum];
+        for (int i = 0; i < 3; i++)
+        {
+            if (SelectedSlot == Slots[i])
+            {
+                Slots[i].gameObject.GetComponentInParent<Image>().color = ChangeColor;
+            }
+            else
+            {
+                Slots[i].gameObject.GetComponentInParent<Image>().color = OrgColor;
+            }
+        }
     }
 
-    public void SelecteSlot(int num)
+    public void SaveButton()
     {
-        DataManager.Instance.nowSlot = num;
-        SelectedSlot = Slots[num];
+        SaveData save = new SaveData();
+        Game_to_Data(save); // ê²Œì„ì˜ ì •ë³´ë¥¼ ë°ì´í„°ë¡œ ì €ì¥
+        SeasonTextSet(save); // ê³„ì ˆì— ë§ëŠ” ë‹¨ì–´ ì„ íƒ
+        Slots[DataManager.Instance.SlotNum].text = $"{SeasonText}-{save.Month}ì›”-{save.Day}ì¼";
+
+        DataManager.Instance.Save(save);
     }
 
-    public void OnSave()
+    public void LoadButton()
     {
-        DataManager.Instance.SaveData(GameManager.Instance.Gold);
-        SelectedSlot.text = SavedSlot;
-    }
-
-    public void OnLoad()
-    {
+        DataManager.Instance.Save_pathLoad();
         SceneManager.LoadScene(1);
     }
 
+    public void Game_to_Data(SaveData save) // ê²Œì„ì˜ ì •ë³´ë¥¼ ë°ì´í„°ë¡œ ì €ì¥
+    {
+        save.Gold = GameManager.Instance.Gold;
+        save.Fame = GameManager.Instance.Fame;
+        save.Day = TimeManager.Instance.DayCount;
+        save.Month = TimeManager.Instance.MonthCount;
+        save.Season = TimeManager.Instance.SeasonCount;
+        save.RQList = QuestManager.Instance.RQlist;
+    }
 
+    public void Exit()
+    {
+        NoTouch.SetActive(false);
+        gameObject.SetActive(false);
+    }
+
+    public void SeasonTextSet(SaveData save)
+    {
+        switch (save.Season)
+        {
+            case 1:
+                SeasonText = "ë´„";
+                break;
+            case 2:
+                SeasonText = "ì—¬ë¦„";
+                break;
+            case 3:
+                SeasonText = "ê°€ì„";
+                break;
+            case 4:
+                SeasonText = "ê²¨ìš¸";
+                break;
+        }
+    }
 }

@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.Diagnostics;
 
-public class QuestInformation : MonoBehaviour // ÇØ´ç ½ºÅ©¸³Æ®´Â ¸ğÇè°¡¿Í Äù½ºÆ® ¿äÃ»¼­¿Í °°ÀÌ »ç¿ëµÊ
+public class QuestInformation : MonoBehaviour 
 {
     public GameObject ParentOBJ;
     public GameObject ChildOBJ;
-    public GameObject NewsBArea; // NewsBalloonÀÌ ÀÚ½ÄÀ¸·Î »ı¼ºµÇ´Â UiCanvas¾ÈÀÇ ºÎ¸ğ ¿ÀºêÁ§Æ®
+    public GameObject NewsBArea;
 
     public Quest.QuestInfo myQuest;
     public TMP_Text Questname;
@@ -18,32 +17,34 @@ public class QuestInformation : MonoBehaviour // ÇØ´ç ½ºÅ©¸³Æ®´Â ¸ğÇè°¡¿Í Äù½ºÆ®
     public TMP_Text reward;
     public TMP_Text Result;
     //string result;
-    bool chk; // ¼º°ø ½ÇÆĞ ¿©ºÎ Ã¼Å©
-    public GameObject myNpc; // Äù½ºÆ®¸¦ ÁØ npc
+    bool chk;
+    public GameObject myNpc;
     public int People;
     public bool IsQuestchk;
-    public bool NpcChk = true; // ÇØ´ç ½ºÅ©¸³Æ®°¡ ¹ÙÀÎµù µÇ¾îÀÖ´Â ¿ÀºêÁ§Æ®°¡ ¸ğÇè°¡ÀÎÁö ¾Æ´Ï¸é UiÇÁ¸®ÆÕ ÀÎÁö ±¸ºĞ (false=¿äÃ»¼­/true=¸ğÇè°¡)
+    public bool NpcChk = true; 
 
-    GameObject WindowArea; // AdDataWindow°¡ ÀÚ½ÄÀ¸·Î »ı¼ºµÇ´Â UiCanvas¾ÈÀÇ ºÎ¸ğ ¿ÀºêÁ§Æ®
+    GameObject WindowArea;
 
     public void Start()
     {
         WindowArea = GameObject.Find("WindowArea");
-        //UI¸Å´ÏÀú
-        if(NpcChk == false) // UiÇÁ¸®ÆÕÀÏ °æ¿ì
+        //UIï¿½Å´ï¿½ï¿½ï¿½
+        if(NpcChk == false)
         {
             ParentOBJ = GameObject.Find("SpawnPointQ");
-            ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+            if(ParentOBJ.transform.childCount > 0)
+            {
+                ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+            }
         }
-        else // ¸ğÇè°¡ÀÏ °æ¿ì
+        else // ï¿½ï¿½ï¿½è°¡ï¿½ï¿½ ï¿½ï¿½ï¿½
         {
-            if(this.gameObject.GetComponent<Host>().purpose == 0) // ¹æ¹®¸ñÀûÀÌ ·ÎºñÀÎ °æ¿ì
+            if(this.gameObject.GetComponent<Host>().purpose == 0)
             {
                 ParentOBJ = GameObject.Find("SpawnPointQ");
                 ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
             }
         }
-
         NewsBArea = GameObject.Find("NewsBArea");
     }
     public void ShowQuest(Quest.QuestInfo npc)
@@ -52,7 +53,6 @@ public class QuestInformation : MonoBehaviour // ÇØ´ç ½ºÅ©¸³Æ®´Â ¸ğÇè°¡¿Í Äù½ºÆ®
         Name.text = "[" + npc.questname + "]";
         if (IsQuestchk)
         {
-            //¸ğÇè°¡ º¸°í¼­ ¿ë
             int rnd = Random.Range(0, 10);
             if (rnd > 4)
             {
@@ -62,25 +62,23 @@ public class QuestInformation : MonoBehaviour // ÇØ´ç ½ºÅ©¸³Æ®´Â ¸ğÇè°¡¿Í Äù½ºÆ®
             {
                 chk = false;
             }
-            //º¸°í¼­ ¿ë
-            Result.text = chk ? "[¼º°ø]" : "[½ÇÆĞ]"; // ¼º°ø ½ÇÆĞ ¿©ºÎ Ã¼Å©ÈÄ º¯°æ
+            Result.text = chk ? "[ì„±ê³µ]" : "[ì‹¤íŒ¨]"; 
         }
         else
         {
-            //Äù½ºÆ® ½ÅÃ»¿ë
             info.text = "\"" + npc.information + "\"";
         }
-        reward.text = "[°ñµå : " + npc.rewardgold.ToString() + "G]" + "\n" + "[ÆòÆÇ : " + npc.rewardfame.ToString() + "P]";
+        reward.text = "[ê³¨ë“œ : " + npc.rewardgold.ToString() + "G]" + "\n" + "[í‰íŒ : " + npc.rewardfame.ToString() + "P]";
     }
 
 
-    public void AddQuest() // ½Â³«
+    public void AddQuest() 
     {
-        if (People == 0) // ¸¶À»»ç¶÷
+        if (People == 0) 
         {
             QuestManager.Instance.PostedQuest(myQuest);
         }
-        else // ¸ğÇè°¡
+        else 
         {
             QuestManager.Instance.ProgressQuest(myQuest, ChildOBJ);
             ChildOBJ.GetComponent<Host>().Questing = true;
@@ -103,26 +101,25 @@ public class QuestInformation : MonoBehaviour // ÇØ´ç ½ºÅ©¸³Æ®´Â ¸ğÇè°¡¿Í Äù½ºÆ®
         Destroy(ChildOBJ.GetComponent<Host>().Quest.gameObject);
         QuestManager.Instance.EndQuest(myQuest);
         if (chk)
-        { // ¼º°ø½Ã Áõ°¡ ¿¬»ê
+        {
             GameManager.Instance.ChangeGold(myQuest.rewardgold);
             GameManager.Instance.ChangeFame(myQuest.rewardfame);
             ChildOBJ.GetComponent<Host>().onSmile = true;
         }
         else
-        { // ½ÇÆĞ½Ã °¨¼Ò ¿¬»ê
+        { 
             GameManager.Instance.ChangeGold(-myQuest.rewardgold);
             GameManager.Instance.ChangeFame(-myQuest.rewardfame);
             ChildOBJ.GetComponent<Host>().onAngry = true;
         }
-        //ÇöÀç Äù½ºÆ® ¸®½ºÆ®¸¦ ¿Ï·á Äù½ºÆ® ¸®½ºÆ®¿¡ Ãß°¡
-        Destroy(gameObject); // È®ÀÎ½Ã ¿¬»ê ÈÄ ÆäÀÌÁö »èÁ¦
+        Destroy(gameObject); 
 
     }
-    public void onNewsBalloon() // ´º½º¸»Ç³¼± »ı¼º "»õ·Î¿î Äù½ºÆ®°¡ Ãß°¡µÇ¾ú½À´Ï´Ù."
+    public void onNewsBalloon() 
     {
         GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), NewsBArea.transform) as GameObject;
     }
-    public void onAdDataWindow() // ¸ğÇè°¡ Á¤º¸Ã¢ ¶ç¿ì±â
+    public void onAdDataWindow() 
     {
         GameObject obj = Instantiate(Resources.Load("UiPrefabs/AdDataWindow"), WindowArea.transform) as GameObject;
     }

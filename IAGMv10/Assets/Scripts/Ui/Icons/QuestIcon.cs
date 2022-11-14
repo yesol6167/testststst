@@ -29,8 +29,6 @@ public class QuestIcon : MonoBehaviour, IBeginDragHandler, IDragHandler
         if (myIconZone != null)
         {
             transform.position = Camera.main.WorldToScreenPoint(myIconZone.position);
-            //-나중에 이부분 가독성 좋게 수정할 방법 찾기-
-            //myTarget.parent.parent.parent.parent.parent.parent.parent.parent.gameObject = host;
             hostobj = myIconZone.parent.parent.parent.parent.parent.parent.parent.parent.gameObject;
             VLchk = hostobj.GetComponent<Host>().VLchk;// 호스트 말고 스폰매니저에서 바로 받아오기
             npcQuest = VLchk ? hostobj.GetComponent<VLNpc>().myQuest : hostobj.GetComponent<QuestInformation>().myQuest; // 삼항식으로 마을사람 참, 모험가 거짓임

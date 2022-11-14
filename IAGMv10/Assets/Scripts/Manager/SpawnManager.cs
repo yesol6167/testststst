@@ -16,15 +16,22 @@ public class SpawnManager : Singleton<SpawnManager>
     bool Hostchk;
     public int hcount = 0;
     public int ADcount = 0;
-    GameObject Host;
+    public GameObject Host;
     public VLNpc.VLNPC[] VLarray = new VLNpc.VLNPC[3];
     public int total;
     public bool first = true;
 
-    public bool BlockChk = false; // Npc 생성위치에 이미 생성된 Npc가 서있어서 생성을 막고있는지 check
+    [SerializeField]
+    public GameObject BlockChkZone;
+
+    new private void Awake()
+    {
+
+    }
+
     private void Update()
     {
-        if(BlockChk == false) // Npc 생성위치에 아무런 방해물이 없어서 정상일 때
+        if(BlockChkZone.GetComponent<BlockCheckZone>().BlockChk == false) // Npc 생성위치에 아무런 방해물이 없어서 정상일 때
         {
             if (curTime >= spawnTime && hostCount < maxCount)
             {

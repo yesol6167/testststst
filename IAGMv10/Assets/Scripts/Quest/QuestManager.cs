@@ -26,10 +26,12 @@ public class QuestManager : Singleton<QuestManager>
 
     List<Quest> questlist = new List<Quest>();
     //받은 퀘스트 목록 >> 마을 사람 아이콘 클릭 시
-    void Update()
-    {
 
+    private void Awake()
+    {
+        
     }
+
     public void PostedQuest(Quest.QuestInfo npc)
     {
         RQlist.Add(npc);

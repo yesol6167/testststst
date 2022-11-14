@@ -1642,7 +1642,7 @@ MonoBehaviour:
   myStaff: {fileID: 0}
   IconArea: {fileID: 0}
   VLchk: 0
-  IsFinishQuest: 0
+  Questing: 0
   exitchk: 0
   Clockchk: 0
   IsQuest: 0
