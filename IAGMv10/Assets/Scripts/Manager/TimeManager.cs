@@ -68,7 +68,7 @@ public class TimeManager : Singleton<TimeManager>
         if (temp <= CloseReadyTime)
         {
             OnCloseReady();
-            if (temp <= 0)
+            if (temp <= -0.1f)
             {
                 GuildClose = true;
             }

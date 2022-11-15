@@ -117,7 +117,7 @@ public class SpawnManager : Singleton<SpawnManager>
             }
             else // 모험가 생성
             { 
-                int Purpose = Random.Range(0, 3);
+                int Purpose = Random.Range(0, 2);
                 Host = Instantiate(AD[ADnum], spawnPoints[Purpose]) as GameObject;
                 Host.GetComponent<Host>().purpose = Purpose; // = 방문 구역이 로비(0)/펍(1)/모텔(2) 중에서 랜덤으로 주어진다.
                 if (Host.GetComponent<Host>().purpose == 0) //모험가의 방문목적이 퀘스트 일때만 퀘스트를 부여함
@@ -136,7 +136,7 @@ public class SpawnManager : Singleton<SpawnManager>
         }
         else // if(hcount = 0) 현재 길드내에 마을사람이 없으면(처음에) 모험가(방문목적:모텔/여관)와 마을사람이 50:50의 확률로 생성됨
         {
-            int Num = UnityEngine.Random.Range(0, 1);
+            int Num = UnityEngine.Random.Range(0, 2);
             switch(Num)
             {
                 case 0: // 마을사람
@@ -147,7 +147,7 @@ public class SpawnManager : Singleton<SpawnManager>
                     Host.GetComponent<Host>().People = 0;
                     break;
                 case 1: // 모험가
-                    int Purpose = Random.Range(1, 3); // 방문 목적이 펍(1) 또는 모텔(2)
+                    int Purpose = Random.Range(0, 2); // 방문 목적이 펍(1) 또는 모텔(2)
                     Host = Instantiate(AD[ADnum], spawnPoints[Purpose]) as GameObject;
                     Host.GetComponent<ADNpc>().adtype = ADnum;
                     Host.GetComponent<Host>().purpose = Purpose; // = 방문 구역이 로비(0)/펍(1)/모텔(2) 중에서 랜덤으로 주어진다.

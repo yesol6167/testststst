@@ -36,7 +36,7 @@ public class DayReportWindow : MonoBehaviour
                 _S = "겨울";
                 break;
         }
-        myClosedDay.text = _S + $" {M}월 {D}일 영업종료";
+        myClosedDay.text = _S + $" {M}월 {D - 1}일 영업종료";
 
         // 현재 골드/평판
         NowGold = GameManager.Instance.Gold;

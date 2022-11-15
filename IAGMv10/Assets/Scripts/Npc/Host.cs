@@ -139,7 +139,7 @@ public class Host : MonoBehaviour, IBattle
                 StopAllCoroutines();
                 OnIcon("EatIcon");
                 GetComponent<Animator>().SetTrigger("IsSeating");
-                Invoke("GoExit", 5);
+                Invoke("GoExit", 5); //수정 종찬
                 break;
             case STATE.Sleeping:
                 StopAllCoroutines();
@@ -419,6 +419,25 @@ public class Host : MonoBehaviour, IBattle
                 break;
             case "AngryIcon":
                 Icon.GetComponent<MoodIcon>().myIconZone = myIconZone;
+                if (SpawnManager.Instance.EndTime < SpawnManager.Instance.DeadLine)
+                {
+                    if (People == 0)
+                    {
+                        GameManager.Instance.Fame -= GetComponent<VLNpc>().myQuest.rewardfame;
+                    }
+                    else
+                    {
+                        if (purpose == 0)
+                        {
+                            GameManager.Instance.Fame -= GetComponent<QuestInformation>().myQuest.rewardfame;
+                        }
+                        else
+                        {
+                            GameManager.Instance.Fame -= 10;
+
+                        }
+                    }
+                }
                 break;
             case "QuestIcon":
                 Icon.GetComponent<QuestIcon>().myIconZone = myIconZone;

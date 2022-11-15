@@ -3,21 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class RoomExtend : MonoBehaviour
+public class RoomExtend : Singleton<RoomExtend>
 {
-    ChairBedChk Furniture; //가구
+    ChairBedChk _furniture = null;
+    ChairBedChk Furniture
+    {
+        get
+        {
+            if (_furniture == null)
+            {
+                _furniture = GameObject.FindObjectOfType<ChairBedChk>();
+            }
+            return _furniture;
+        }
+    }
     public GameObject RoomExtendBtn; // 방 증축 버튼
     public GameObject PubChairBtn; // 식당 의자 증축 버튼
     public GameObject[] Rooms;
     public GameObject[] PubChairs;
     public int RoomsCount = 0;
-    public int PubCount = 0;
+    public int TableSetCount = 0;
     int Price = -1000; // 가격
 
-    void Start()
-    {
-        Furniture = GameObject.FindObjectOfType<ChairBedChk>();
-    }
     public void RExtend() //방 증축
     {
         
@@ -47,8 +54,8 @@ public class RoomExtend : MonoBehaviour
                 {
                     Furniture._chairSlot.Add(ChairBedChk.ChairSlot.None);
                 }
-                PubChairs[PubCount].SetActive(true);
-                PubCount++;
+                PubChairs[TableSetCount].SetActive(true);
+                TableSetCount++;
                 GameManager.Instance.ChangeGold(Price);
             }
         }
@@ -56,5 +63,22 @@ public class RoomExtend : MonoBehaviour
         {
             UIManager.Inst.ExtendFail = true;
         }
+    }
+
+    public void M_ExtendLoad() // 여관게임 로드 할때 실행되는 함수
+    {
+        Furniture._bedSlot.Add(ChairBedChk.BedSlot.None);
+        Rooms[RoomsCount].SetActive(true);
+        RoomsCount++;
+    }
+
+    public void P_ExtendLoad() // 식당게임 로드 할때 실행되는 함수
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            Furniture._chairSlot.Add(ChairBedChk.ChairSlot.None);
+        }
+        PubChairs[TableSetCount].SetActive(true);
+        TableSetCount++;
     }
 }

@@ -14,4 +14,7 @@ public class SaveData
     public int Season;
 
     public List<Quest.QuestInfo> RQList;
+
+    public int RoomsCount;
+    public int TableSetCount;
 }

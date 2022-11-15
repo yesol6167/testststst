@@ -74,6 +74,8 @@ public class SaveLodeWindow : MonoBehaviour
         save.Month = TimeManager.Instance.MonthCount;
         save.Season = TimeManager.Instance.SeasonCount;
         save.RQList = QuestManager.Instance.RQlist;
+        save.RoomsCount = RoomExtend.Instance.RoomsCount;
+        save.TableSetCount = RoomExtend.Instance.TableSetCount;
     }
 
     public void Exit()

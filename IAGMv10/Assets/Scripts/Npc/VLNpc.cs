@@ -61,7 +61,7 @@ public class VLNpc : MonoBehaviour
                                     Qnpc.myQuestInfo.questgrade = Quest.QuestGRADE.F;
                                     Qnpc.myQuestInfo.information = "약초를 구해주세요!";
                                     Qnpc.myQuestInfo.rewardgold = 10;
-                                    Qnpc.myQuestInfo.rewardfame = 200;
+                                    Qnpc.myQuestInfo.rewardfame = 100;
                                     break;
                                 case 1:
                                     Qnpc.Name = "평민";
@@ -69,7 +69,7 @@ public class VLNpc : MonoBehaviour
                                     Qnpc.myQuestInfo.questgrade = Quest.QuestGRADE.F;
                                     Qnpc.myQuestInfo.information = "포션에 필요한 재료인 슬라임 10마리를 퇴치해 주세요!";
                                     Qnpc.myQuestInfo.rewardgold = 10;
-                                    Qnpc.myQuestInfo.rewardfame = 200;
+                                    Qnpc.myQuestInfo.rewardfame = 100;
                                     break;
                             }
                             break;
@@ -103,7 +103,7 @@ public class VLNpc : MonoBehaviour
                                     Qnpc.myQuestInfo.questgrade = Quest.QuestGRADE.D;
                                     Qnpc.myQuestInfo.information = "가고일의 발톱을 3개 구해주세요!";
                                     Qnpc.myQuestInfo.rewardgold = 30;
-                                    Qnpc.myQuestInfo.rewardfame = 200;
+                                    Qnpc.myQuestInfo.rewardfame = 300;
                                     break;
                                 case 1:
                                     Qnpc.Name = "평민";
@@ -111,7 +111,7 @@ public class VLNpc : MonoBehaviour
                                     Qnpc.myQuestInfo.questgrade = Quest.QuestGRADE.D;
                                     Qnpc.myQuestInfo.information = "미궁에 들어가 가고일을 15마리를 퇴치해 주세요!";
                                     Qnpc.myQuestInfo.rewardgold = 30;
-                                    Qnpc.myQuestInfo.rewardfame = 200;
+                                    Qnpc.myQuestInfo.rewardfame = 300;
                                     break;
                             }
                             break;
@@ -182,7 +182,7 @@ public class VLNpc : MonoBehaviour
                                     Qnpc.myQuestInfo.questgrade = Quest.QuestGRADE.A;
                                     Qnpc.myQuestInfo.information = "유니콘의 뿔을 1개 구해주세요!";
                                     Qnpc.myQuestInfo.rewardgold = 300;
-                                    Qnpc.myQuestInfo.rewardfame = 300;
+                                    Qnpc.myQuestInfo.rewardfame = 3000;
                                     break;
                                 case 1:
                                     Qnpc.Name = "왕족";
@@ -190,7 +190,7 @@ public class VLNpc : MonoBehaviour
                                     Qnpc.myQuestInfo.questgrade = Quest.QuestGRADE.A;
                                     Qnpc.myQuestInfo.information = "마을에 쳐들어온 드래곤을 퇴치해 주세요!";
                                     Qnpc.myQuestInfo.rewardgold = 300;
-                                    Qnpc.myQuestInfo.rewardfame = 300;
+                                    Qnpc.myQuestInfo.rewardfame = 3000;
                                     break;
                             }
                             break;
@@ -226,7 +226,7 @@ public class VLNpc : MonoBehaviour
                         weights[0] = 100;
                         weights[1] = 0;
 
-                        for (int i = 0; i < (fame / 100); i++)
+                        for (int i = 0; i < (fame / 1000); i++)
                         {
                             if (weights[0] != 0)
                             {
@@ -254,7 +254,7 @@ public class VLNpc : MonoBehaviour
                     if (fame >= 0)
                     {
                         weights[0] = 100;
-                        for (int i = 0; i < (fame / 100); i++)
+                        for (int i = 0; i < (fame / 1000); i++)
                         {
                             if (weights[0] == 0)
                             {

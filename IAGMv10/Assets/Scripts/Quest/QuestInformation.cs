@@ -35,7 +35,10 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
         if(NpcChk == false || this.gameObject.GetComponent<Host>().purpose == 0) // Ui프리팹일 경우
         {
             ParentOBJ = UIManager.Inst.ParentOBJ;
-            ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+            if (ParentOBJ.transform.childCount > 0)
+            {
+                ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+            }
         }
         NewsBArea = UIManager.Inst.NewsBArea;
 
@@ -87,6 +90,10 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
         }
         else
         {
+            if(People != 0)
+            {
+                QuestManager.Instance.PostedQuest(myQuest);
+            }
             //메시지 출력
             GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), NewsBArea.transform) as GameObject;
             obj.GetComponent<NewsBalloon>().SetText("마감시간에는 \n새로운 퀘스트를 \n추가할 수 없습니다.");
@@ -108,6 +115,7 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
         ChildOBJ.GetComponent<Host>().onAngry = true;
         if(People != 0)
         {
+            QuestManager.Instance.PostedQuest(myQuest);
             GameObject obj = Instantiate(Resources.Load("UiPrefabs/NewsBalloon"), NewsBArea.transform) as GameObject;
             obj.GetComponent<NewsBalloon>().SetText("퀘스트가 \n반환되었습니다.");
         }

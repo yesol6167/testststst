@@ -48,6 +48,7 @@ public class Quest : MonoBehaviour
             set => Rewards.fame = value;
         }
     }
+    [Serializable]
     public struct Reward
     {
         [SerializeField] int Gold;

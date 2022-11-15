@@ -84,7 +84,8 @@ public class DataManager : Singleton<DataManager>
         TimeManager.Instance.DayCount = save.Day;
         TimeManager.Instance.MonthCount = save.Month;
         TimeManager.Instance.SeasonCount = save.Season;
-        
+
+        ExtendLoad(save);
         RQListLoad(save);
     }
 
@@ -97,4 +98,18 @@ public class DataManager : Singleton<DataManager>
         }
     }
 
+    public void ExtendLoad(SaveData save)
+    {
+        //모텔
+        for (int i = 0; i < save.RoomsCount; ++i)
+        {
+            RoomExtend.Instance.M_ExtendLoad();
+        }
+
+        //여관
+        for (int i = 0; i < save.TableSetCount; ++i)
+        {
+            RoomExtend.Instance.P_ExtendLoad();
+        }
+    }
 }
