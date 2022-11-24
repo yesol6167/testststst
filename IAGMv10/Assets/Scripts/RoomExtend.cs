@@ -27,8 +27,7 @@ public class RoomExtend : Singleton<RoomExtend>
 
     public void RExtend() //¹æ ÁõÃà
     {
-        
-        if(GameManager.Instance.Gold >= -Price)
+        if (GameManager.Instance.Gold >= -Price)
         {
             if (Furniture._bedSlot.Count < 5)
             {

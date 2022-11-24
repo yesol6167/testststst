@@ -16,6 +16,8 @@ using System.Runtime.CompilerServices;
 
 public class Host : MonoBehaviour, IBattle
 {
+    public AudioSource AttackSound;
+
     GameObject Icon;
 
     public bool LineChk = false; // 퇴장하는 Npc와 입장하는 Npc의 충돌시 시계아이콘 생성되는 오류 수정
@@ -23,7 +25,7 @@ public class Host : MonoBehaviour, IBattle
 
     public GameObject Quest; // 프리팹 둘은 연결 >> 퀘스트 완료 >> 완료되었으면 quest 프리팹을 파괴
     // 화살 위치 화살
-    public Transform myBow;
+    public GameObject myBow;
     public GameObject orgArrow;
 
     //마법 이펙트 
@@ -91,6 +93,10 @@ public class Host : MonoBehaviour, IBattle
         switch (myState)
         {
             case STATE.Create:
+                /*if(GetComponent<ADNpc>().myStat.npcJob == CharState.NPCJOB.ACHER)
+                {
+                    myBow.SetActive(false);
+                }*/
                 break;
             case STATE.Idle:
                 StopAllCoroutines();
@@ -375,6 +381,7 @@ public class Host : MonoBehaviour, IBattle
     {
         yield return new WaitForSeconds(t);
         GetComponent<ADNpc>().AI_Per.SetActive(false);
+        if (GetComponent<ADNpc>().myStat.npcJob == CharState.NPCJOB.ACHER) myBow.SetActive(false);
         SpawnManager.Instance.Teleport(gameObject);
         GetComponent<Animator>().SetBool("IsMoving", true);
         Clockchk = false;
@@ -419,7 +426,7 @@ public class Host : MonoBehaviour, IBattle
                 break;
             case "AngryIcon":
                 Icon.GetComponent<MoodIcon>().myIconZone = myIconZone;
-                if (SpawnManager.Instance.EndTime < SpawnManager.Instance.DeadLine)
+                if (SpawnManager.Instance.EndTime < TimeManager.Instance.DeadLine)
                 {
                     if (People == 0)
                     {
@@ -434,7 +441,6 @@ public class Host : MonoBehaviour, IBattle
                         else
                         {
                             GameManager.Instance.Fame -= 10;
-
                         }
                     }
                 }
@@ -593,6 +599,7 @@ public class Host : MonoBehaviour, IBattle
     {
         if (tr == myTarget)
         {
+            AttackSound.Stop();
             LostTarget();
             StartCoroutine(FinishQuest(2.0f));
         }
@@ -600,7 +607,7 @@ public class Host : MonoBehaviour, IBattle
 
     public void CreateArrow() // 화살 생성
     {
-        GameObject obj = Instantiate(orgArrow, myBow);
+        GameObject obj = Instantiate(orgArrow, myBow.transform);
         obj.GetComponent<Arrow>().myTarget = myTarget;
         obj.GetComponent<Arrow>().OnFire();
     }

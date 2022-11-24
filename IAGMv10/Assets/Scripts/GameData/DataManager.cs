@@ -11,7 +11,7 @@ public class DataManager : Singleton<DataManager>
     public string pathSave;
     public string pathLoad;
 
-    void Awake()
+    new void Awake()
     {
         pathSave = Path.Combine(Application.dataPath, "Save", "Save");
         pathLoad = Path.Combine(Application.dataPath, "Load", "Load.bin");

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class QuestWindow : MonoBehaviour
 {
+    public int tutorialchk = 0;
     public static bool QuestActivated = false;
     public GameObject QuestList;
     public GameObject QuestBtn;
@@ -32,6 +33,7 @@ public class QuestWindow : MonoBehaviour
 
     public void OpenQuest()
     {
+        tutorialchk++;
         QuestList.SetActive(true);
     }
 

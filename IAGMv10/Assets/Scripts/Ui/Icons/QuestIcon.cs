@@ -45,6 +45,7 @@ public class QuestIcon : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void ShowRequestWindow() //퀘스트 버튼 누르면 퀘스트 요청서 생성
     {
+        //GameManager.Instance.GetComponent<AudioSource>().Play();
         GameObject RQwindow;
         if (VLchk)
         {

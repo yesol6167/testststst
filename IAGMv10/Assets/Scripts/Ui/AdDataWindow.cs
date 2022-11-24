@@ -34,6 +34,7 @@ public class AdDataWindow : MonoBehaviour
 
     public void RemoveWinndow() // X버튼 누르면 창 닫기
     {
+        GameManager.Instance.GetComponent<AudioSource>().Play();
         Destroy(gameObject);
     }
 }

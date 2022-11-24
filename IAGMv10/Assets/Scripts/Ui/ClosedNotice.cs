@@ -13,6 +13,7 @@ public class ClosedNotice : MonoBehaviour
     private void Start()
     {
         CloseTime = TimeManager.Instance.CloseReadyTime;
+        StartCoroutine(ClockSound());
     }
 
     void Update()
@@ -24,6 +25,16 @@ public class ClosedNotice : MonoBehaviour
     public void ResetTime()
     {
         CloseTime = TimeManager.Instance.CloseReadyTime;
+    }
+
+    IEnumerator ClockSound()
+    {
+        while (TimeManager.Instance.clockSound)
+        {
+            GetComponent<AudioSource>().Play();
+            yield return new WaitForSeconds(2.0f);
+        }
+        yield return null;
     }
 
 }

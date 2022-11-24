@@ -5,21 +5,20 @@ using UnityEngine.AI;
 
 public class SpawnManager : Singleton<SpawnManager>
 {
+    
     public List<VLNpc.VLNPC> vlnpcs = new List<VLNpc.VLNPC>();
     public int hostCount;
     public int maxCount; // 길드안에 생성될수 있는 최대 캐릭터 수
     public float spawnTime; // 캐릭터 생성 주기
-    float curTime;
+    public float curTime;
     public float EndTime = 0.0f;
-    public float DeadLine = 555.0f;
-    public float Day = 600.0f;
     public Transform[] spawnPoints;
     public GameObject[] VL; // Villager(마을사람)
     public GameObject[] AD; // Adventeur(모험가)
     bool Hostchk;
     public int hcount = 0;
     public int ADcount = 0;
-    GameObject Host;
+    public GameObject Host;
     public VLNpc.VLNPC[] VLarray = new VLNpc.VLNPC[3];
     public int total;
     public bool first = true;
@@ -31,11 +30,14 @@ public class SpawnManager : Singleton<SpawnManager>
     public GameObject[] monsters;
     public Transform[] BattlePoint;
 
+    //텔레포트 포인트
+    public GameObject TP;
+
     public bool BlockChk = false; // Npc 생성위치에 이미 생성된 Npc가 서있어서 생성을 막고있는지 check
     private void Update()
     {
         EndTime += Time.deltaTime;
-        if (EndTime < DeadLine) {
+        if (EndTime < TimeManager.Instance.DeadLine) {
 
             if (BlockChk == false) // Npc 생성위치에 아무런 방해물이 없어서 정상일 때
             {
@@ -64,7 +66,7 @@ public class SpawnManager : Singleton<SpawnManager>
         }
 
         curTime += Time.deltaTime;
-        if(EndTime >= Day)
+        if(EndTime >= TimeManager.Instance.OneDay)
         {
             QuestManager.Instance.EndQuestClear();
             EndTime = 0.0f;
@@ -106,7 +108,7 @@ public class SpawnManager : Singleton<SpawnManager>
         hostCount++;
         if ( hcount > 0 )
         {
-            int Nnum = UnityEngine.Random.Range(0, 3);
+            int Nnum = UnityEngine.Random.Range(0, 2); // 종찬
             if (Nnum == 0) // 마을사람 생성
             { 
                 // VL[0]을 npc[0]에 넣는다.
@@ -116,14 +118,32 @@ public class SpawnManager : Singleton<SpawnManager>
                 Host.GetComponent<Host>().purpose = 0; // = 방문 구역이 로비이다
             }
             else // 모험가 생성
-            { 
-                int Purpose = Random.Range(0, 3);
+            {
+                int Purpose = TP.GetComponent<TeleportPoint>().AllChk() ? Random.Range(0, 3) : Random.Range(1, 3); // 퀘스트 존이 가득 찼을 때
                 Host = Instantiate(AD[ADnum], spawnPoints[Purpose]) as GameObject;
                 Host.GetComponent<Host>().purpose = Purpose; // = 방문 구역이 로비(0)/펍(1)/모텔(2) 중에서 랜덤으로 주어진다.
                 if (Host.GetComponent<Host>().purpose == 0) //모험가의 방문목적이 퀘스트 일때만 퀘스트를 부여함
                 {
-                    int j = UnityEngine.Random.Range(0, QuestManager.Instance.RQlist.Count); //RQ리스트에 있는 퀘스트 중에서 랜덤으로 모험가에게 부여
-                    Host.GetComponent<QuestInformation>().myQuest = QuestManager.Instance.RQlist[j];
+                    int j;
+                    do
+                    {
+                        j = UnityEngine.Random.Range(0, QuestManager.Instance.RQlist.Count); //RQ리스트에 있는 퀘스트 중에서 랜덤으로 모험가에게 부여
+                        Host.GetComponent<QuestInformation>().myQuest = QuestManager.Instance.RQlist[j];
+                        if (Host.GetComponent<QuestInformation>().myQuest.questname == "채집")
+                        {
+                            if (TP.GetComponent<TeleportPoint>().Quest2chk())
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if (TP.GetComponent<TeleportPoint>().Quest1chk())
+                            {
+                                break;
+                            }
+                        }
+                    } while (true);
                     QuestManager.Instance.RQlist.RemoveAt(j); // RQ리스트 제거
                     Destroy(QuestManager.Instance.RQuest.transform.GetChild(j).gameObject); // RQ프리팹 삭제
                     hcount--; // ? 주현 : 해당 명령어는 왜 있는가?
@@ -136,7 +156,7 @@ public class SpawnManager : Singleton<SpawnManager>
         }
         else // if(hcount = 0) 현재 길드내에 마을사람이 없으면(처음에) 모험가(방문목적:모텔/여관)와 마을사람이 50:50의 확률로 생성됨
         {
-            int Num = UnityEngine.Random.Range(0, 1);
+            int Num = UnityEngine.Random.Range(0, 2); // 종찬
             switch(Num)
             {
                 case 0: // 마을사람
@@ -152,6 +172,7 @@ public class SpawnManager : Singleton<SpawnManager>
                     Host.GetComponent<ADNpc>().adtype = ADnum;
                     Host.GetComponent<Host>().purpose = Purpose; // = 방문 구역이 로비(0)/펍(1)/모텔(2) 중에서 랜덤으로 주어진다.
                     Host.GetComponent<Host>().VLchk = false; // = 해당 캐릭터는 모험가이다
+                    Host.GetComponent<Host>().People = 1;
                     //Host.GetComponent<QuestInformation>().NpcChk = true;
                     break;
             }

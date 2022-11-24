@@ -57,5 +57,6 @@ public class DayReportWindow : MonoBehaviour
         TimeManager.Instance.GuildClose = false;
         gameObject.SetActive(false);
         TimeManager.Instance.temp = TimeManager.Instance.OneDay;
+        TimeManager.Instance.GetComponent<AudioSource>().Play();
     }
 }

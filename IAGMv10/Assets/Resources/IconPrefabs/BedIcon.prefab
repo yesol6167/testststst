@@ -265,4 +265,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myIconZone: {fileID: 0}
   myHost: {fileID: 0}
+  Price: 100
   Pullchk: 0

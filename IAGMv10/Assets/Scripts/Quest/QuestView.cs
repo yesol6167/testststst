@@ -9,6 +9,7 @@ public class QuestView : MonoBehaviour
 
     public void HostView()
     {
+        GameManager.Instance.GetComponent<AudioSource>().Play();
         if(host.GetComponent<Host>().myState == Host.STATE.Battle || host.GetComponent<Host>().myState == Host.STATE.Farming)
         {
             num = host.transform.parent.parent.GetComponent<SpawnChk>().QuestNum;
