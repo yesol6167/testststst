@@ -5,14 +5,22 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DataManager : Singleton<DataManager>
+public class DataManager : MonoBehaviour
 {
+    // ΩÃ±€≈Ê
+    public static DataManager Inst = null;
+   
+
     public int SlotNum;
     public string pathSave;
     public string pathLoad;
 
-    new void Awake()
+    private void Awake()
     {
+        //ΩÃ±€≈Ê
+        Inst = this;
+        DontDestroyOnLoad(gameObject);
+
         pathSave = Path.Combine(Application.dataPath, "Save", "Save");
         pathLoad = Path.Combine(Application.dataPath, "Load", "Load.bin");
     }
@@ -25,9 +33,6 @@ public class DataManager : Singleton<DataManager>
             Data_to_Game(save); // [LODE] µ•¿Ã≈Õ∏¶ ∞‘¿”ø° ¿˚øÎ
         }
     }
-
-
-    
 
     public void Save(SaveData data)
     {

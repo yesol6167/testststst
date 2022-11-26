@@ -15,7 +15,6 @@ public class TutorialMessage : MonoBehaviour
     public Image TutorialBG;
     public GameObject EyeOpenScene;
     public Animator EyeMask;
-    public GameObject Tutorial;
     public GameObject NextIcon;
     public GameObject Dialogue;
     public float typing_Speed = 0.15f;
@@ -53,14 +52,14 @@ public class TutorialMessage : MonoBehaviour
             case STATE.CreateScene:
                 break;
             case STATE.Scene1:
-                Tutorial.SetActive(true);
+                TutorialBG.gameObject.SetActive(true);
                 EyeOpenScene.SetActive(false);
                 StartCoroutine(_typing());
                 break;
             case STATE.Scene2:
                 PlaySound(2);
                 StartCoroutine(Accident(Tu2_txt, Tu2_typing, typing_Speed));
-                Tutorial.SetActive(false);
+                TutorialBG.gameObject.SetActive(false);
                 EyeOpenScene.SetActive(true);
                 break;
             case STATE.Scene3:

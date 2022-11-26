@@ -97,6 +97,7 @@ public class TutorialManager : MonoBehaviour
         CamManager.SetTrigger("LobbyCam");
         yield return new WaitForSecondsRealtime(1.5f);
         FadeOut.SetActive(true);
+        StartCoroutine(FadeOutAnim());
     }
 
     public void C_ClockIcon()
@@ -167,5 +168,18 @@ public class TutorialManager : MonoBehaviour
         Notouch.SetActive(true);
         yield return new WaitForSecondsRealtime(time);
         tutorialDialogues[D_num].SetActive(true);
+    }
+
+    IEnumerator FadeOutAnim()
+    {
+        while (FadeOut.GetComponent<Image>().fillAmount < 1.0f)
+        {
+            FadeOut.GetComponent<Image>().fillAmount += 0.5f * Time.deltaTime;
+            if (FadeOut.GetComponent<Image>().fillAmount == 1.0f)
+            {
+                SceneChangeManager.Inst.ChangeScene("Main");
+            }
+            yield return null;
+        }
     }
 }

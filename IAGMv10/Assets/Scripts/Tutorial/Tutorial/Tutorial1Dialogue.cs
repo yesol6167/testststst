@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -29,6 +30,14 @@ public class Tutorial1Dialogue : MonoBehaviour
         StartCoroutine(Typing(Content, Contents[ContentNum].dialogue));
         Profile.sprite = Contents[ContentNum].cg;
         Name.text = Contents[ContentNum].name;
+    }
+
+    public void ImmediatelyShow()
+    {
+        StopAllCoroutines();
+        Content.text = Contents[ContentNum].dialogue;
+        NextBtn.SetActive(true);
+        TalkEnd = true;
     }
 
     IEnumerator Typing(TMP_Text Text, string text) //글자 타이핑 효과
