@@ -11,7 +11,6 @@ public class TutorialManager : MonoBehaviour
     public GameObject[] tutorialDialogues;
     public GameObject Mask;
     public bool isTutorialEnd = false;
-    public QuestWindow QuestBtnChk;
     public GameObject IconArea;
     public GameObject Notouch;
     public Button MenuIcon;
@@ -43,7 +42,6 @@ public class TutorialManager : MonoBehaviour
         Time.timeScale = 0.0f;
         tutorialDialogues[3].SetActive(true);
         MenuIcon.onClick.AddListener(C_MenuIcon);
-        yield return new WaitWhile(() => QuestBtnChk.tutorialchk < 1);
         yield return new WaitWhile(() => tutorialDialogues[4].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[4].GetComponent<Tutorial2Dialogue>().dialogue.Length);
         Time.timeScale = 1.0f;
         yield return new WaitForSeconds(8.0f);

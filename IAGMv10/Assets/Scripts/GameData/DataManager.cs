@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DataManager : MonoBehaviour
 {
@@ -86,9 +87,14 @@ public class DataManager : MonoBehaviour
     {
         GameManager.Instance.Gold = save.Gold;
         GameManager.Instance.Fame = save.Fame;
-        TimeManager.Instance.DayCount = save.Day;
-        TimeManager.Instance.MonthCount = save.Month;
-        TimeManager.Instance.SeasonCount = save.Season;
+
+        Scene scene = SceneManager.GetActiveScene();
+        if(scene.name == "Main")
+        {
+            TimeManager.Instance.DayCount = save.Day;
+            TimeManager.Instance.MonthCount = save.Month;
+            TimeManager.Instance.SeasonCount = save.Season;
+        }
 
         ExtendLoad(save);
         RQListLoad(save);
