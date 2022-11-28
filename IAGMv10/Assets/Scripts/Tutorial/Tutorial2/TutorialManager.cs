@@ -24,6 +24,7 @@ public class TutorialManager : MonoBehaviour
     public GameObject WindowArea;
     public GameObject ADMonsterZone;
     public GameObject ADFarmZone;
+    public GameObject SpawnPointQ;
 
     void Start()
     {
@@ -70,34 +71,16 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitWhile(() => tutorialDialogues[5].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[5].GetComponent<Tutorial2Dialogue>().dialogue.Length);       
         Notouch.SetActive(false);
 
-        //WindowArea.GetComponentInChildren<QuestInformation>().acception.GetComponent<Button>().onClick.AddListener(AcceptionBtn);
-
-
-        yield return new WaitWhile(() => ADFarmZone.transform.childCount < 1);
+        yield return new WaitUntil(() => ADFarmZone.transform.childCount > 0 || ADMonsterZone.transform.childCount > 0); // 몬스터가 퀘스트 하러 나감
         Notouch.SetActive(false);
         Time.timeScale = 0.0f;
         Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
         tutorialDialogues[6].SetActive(true);
-
-        yield return new WaitWhile(() => ADMonsterZone.transform.childCount < 1);
-        Notouch.SetActive(false);
-        Time.timeScale = 0.0f;
-        Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
-        tutorialDialogues[6].SetActive(true);
-        //yield return new WaitForSeconds(9.0f); // 모험가 퇴장 -> 전투하러 나갔을 때
-        /*Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
-        Time.timeScale = 0.0f;
-        yield return new WaitForSecondsRealtime(1.5f); // 마스크 이동
-        
-        tutorialDialogues[6].SetActive(true);*/
-
-
-
-
 
         yield return new WaitWhile(() => tutorialDialogues[6].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[6].GetComponent<Tutorial2Dialogue>().dialogue.Length); //dialogue7 대화 종료시 다음꺼 실행
         Notouch.SetActive(false);
         PQ_Content.GetChild(0).gameObject.GetComponent<Button>().onClick.AddListener(Mask_AD);
+
         yield return new WaitWhile(() => tutorialDialogues[7].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[7].GetComponent<Tutorial2Dialogue>().dialogue.Length);
         Time.timeScale = 0.0f;
         Mask.GetComponent<Animator>().SetTrigger("M_QuestList");

@@ -259,6 +259,9 @@ public class SpawnManager : Singleton<SpawnManager>
                 i++;
             }
         }
-        monster.GetComponent<MonsterStat>().grade = grade;
+        if (monster.GetComponent<MonsterStat>())
+        {
+            monster.GetComponent<MonsterStat>().grade = grade;
+        }
     }
 }

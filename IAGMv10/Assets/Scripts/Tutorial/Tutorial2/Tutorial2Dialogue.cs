@@ -22,6 +22,7 @@ public class Tutorial2Dialogue : MonoBehaviour
     //public GameObject NoTouch;
     public TutorialManager T_Manager;
     public Animator Mask;
+    public AudioSource TypingSound;
 
     public int count = 0;
     public bool TalkEnd = false;
@@ -48,6 +49,7 @@ public class Tutorial2Dialogue : MonoBehaviour
         Charname.text = dialogue[count].name;
         for (int i = 0; i < dialogue[count].dialogue.Length; ++i)
         {
+            TypingSound.Play();
             Ttdialogue.text = dialogue[count].dialogue.Substring(0, i + 1);
             yield return new WaitForSecondsRealtime(0.1f);
         }
@@ -76,6 +78,7 @@ public class Tutorial2Dialogue : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
+            GameManager.Instance.GetComponent<AudioSource>().Play();
             if (TalkEnd == false)
             {
                 if (T_Manager.tutorialDialogues[0] == gameObject && count == 2)
@@ -128,11 +131,6 @@ public class Tutorial2Dialogue : MonoBehaviour
                     HideDialogue();
                     count++;
                     Time.timeScale = 1.0f;
-                    //if (T_Manager.tutorialDialogues[3] )
-                    //{
-                    //    Time.timeScale = 0.0f;
-                    //}
-
                 }
             }
         }

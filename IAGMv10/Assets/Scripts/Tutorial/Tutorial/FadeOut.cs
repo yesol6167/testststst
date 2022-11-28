@@ -10,13 +10,23 @@ public class FadeOut : MonoBehaviour
 
     void Update()
     {
-            if (myFadeOut.fillAmount < 1.0f)
+        if (myFadeOut.fillAmount < 1.0f)
+        {
+            myFadeOut.fillAmount += 0.5f * Time.deltaTime;
+        }
+        else
+        {
+            Scene scene = SceneManager.GetActiveScene();
+
+            if(scene.name == "Tutorial1")
             {
-                myFadeOut.fillAmount += 0.5f * Time.deltaTime;
+                SceneChangeManager.Inst.ChangeScene("Tutorial2");
             }
             else
             {
-                SceneManager.LoadScene("Loading");
+                SceneChangeManager.Inst.ChangeScene("Main");
             }
+        }
+
     }
 }

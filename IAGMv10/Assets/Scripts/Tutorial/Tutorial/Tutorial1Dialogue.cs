@@ -19,6 +19,7 @@ public class Tutorial1Dialogue : MonoBehaviour
     [SerializeField] public Image Profile;
     [SerializeField] public GameObject NextBtn;
 
+    public AudioSource TypingSound;
     public int ContentNum = 0;
     public bool TalkEnd = false;
 
@@ -37,6 +38,7 @@ public class Tutorial1Dialogue : MonoBehaviour
         TalkEnd = false;
         for (int i = 0; i <= text.Length; ++i)
         {
+            TypingSound.Play();
             Text.text = text.Substring(0, i);
             yield return new WaitForSecondsRealtime(0.15f);
         }
