@@ -5,26 +5,42 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 public class TitleManager : MonoBehaviour
 {
     public GameObject DetailSettingWindow;
     public GameObject SaveLoadWindow;
+    public GameObject Tuto_YorN;
     public bool IsOpen = false;
-    public Color UnActiveColor;
+    public Color ActiveColor;
 
     //로드게임 버튼 관련 변수
     public Image LodeBtn;
     public TMP_Text LodeBtnText;
     public GameObject LodeNotouch;
+    bool[] isSave = new bool[3];
 
     private void Start()
     {
-        if (!File.Exists(DataManager.Inst.pathSave)) // save 파일이 없으면 로드버튼 비활성화
+        for (int i = 0; i < 3; i++)
         {
-            LodeBtn.color = UnActiveColor;
-            LodeBtnText.color = UnActiveColor;
-            LodeNotouch.SetActive(true);
+            if (File.Exists(Path.Combine(Application.dataPath, "Save", $"Save{i}.bin")))
+            {
+                isSave[i] = true;
+            }
+            else
+            {
+                isSave[i] = false;
+            }
+        }
+        
+
+        if (isSave[0] == true || isSave[1] == true || isSave[2] == true)
+        {
+            LodeBtn.color = ActiveColor;
+            LodeBtnText.color = ActiveColor;
+            LodeNotouch.SetActive(false);
         }
 
         SoundSet();
@@ -32,7 +48,8 @@ public class TitleManager : MonoBehaviour
 
     public void NewGame()
     {
-        SceneChangeManager.Inst.ChangeScene("Tutorial1");
+        //SceneChangeManager.Inst.ChangeScene("Tutorial1");
+        Tuto_YorN.SetActive(true);
     }
 
     public void LoadGame()
@@ -69,5 +86,17 @@ public class TitleManager : MonoBehaviour
         }
         DetailSettingWindow.GetComponent<SettingWindow>().Effvolume.value = PlayerPrefs.GetFloat("eff");
         DetailSettingWindow.transform.localPosition = DetailSettingWindow.GetComponent<SettingWindow>().orgPos;
+    }
+
+    public void Tuto_Yes()
+    {
+        //로드 파일 삭제?
+        SceneChangeManager.Instance.ChangeScene("Tutorial1");
+    }
+
+    public void Tuto_NO()
+    {
+        //로드 파일 삭제?
+        SceneChangeManager.Instance.ChangeScene("Main");
     }
 }

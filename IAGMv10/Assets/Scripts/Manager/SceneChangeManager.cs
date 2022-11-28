@@ -4,41 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SceneChangeManager : MonoBehaviour
+public class SceneChangeManager : Singleton<SceneChangeManager>
 {
-    // 싱글톤
-    #region
-    public static SceneChangeManager Inst = null; 
-    private void Awake()
-    {
-        Inst = this;
-        DontDestroyOnLoad(gameObject);
-    }
-    #endregion
 
     public AsyncOperation ao;
-    bool LoadingChk = false; // 현재 로딩 중인지를 검사하는 불값
-    //public Image myTimeArea;
-
-    private void Start()
-    {
-        //StartCoroutine(ClockAnim()); // 시계작동
-    }
-
-    /*IEnumerator ClockAnim()
-    {
-        myTimeArea.fillAmount = 0.0f;
-        float speed = 1.0f;
-        while (myTimeArea.fillAmount < 1.0f)
-        {
-            myTimeArea.fillAmount += speed * Time.deltaTime;
-            if (myTimeArea.fillAmount == 1.0f)
-            {
-                myTimeArea.fillAmount = 0;
-            }
-            yield return null;
-        }
-    }*/
+    public bool LoadingChk = false; // 현재 로딩 중인지를 검사하는 불값
 
     public void ChangeScene(string s)
     {

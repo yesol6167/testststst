@@ -38,7 +38,6 @@ public class TimeManager : Singleton<TimeManager>
     public float temp;
     public int CloseReadyTime = 10; // 마감준비시간
 
-
     new private void Awake()
     {
 

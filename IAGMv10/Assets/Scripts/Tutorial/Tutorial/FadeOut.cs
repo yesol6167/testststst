@@ -20,11 +20,11 @@ public class FadeOut : MonoBehaviour
 
             if(scene.name == "Tutorial1")
             {
-                SceneChangeManager.Inst.ChangeScene("Tutorial2");
+                SceneChangeManager.Instance.ChangeScene("Tutorial2");
             }
             else
             {
-                SceneChangeManager.Inst.ChangeScene("Main");
+                SceneChangeManager.Instance.ChangeScene("Main");
             }
         }
 

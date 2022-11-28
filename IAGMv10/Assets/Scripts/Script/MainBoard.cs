@@ -22,5 +22,9 @@ public class MainBoard : MonoBehaviour
             QuestListWindow.SetActive(false);
         }
     }
+    public void ExitBtn()
+    {
+        QuestListWindow.SetActive(false);
+    }
   }
    

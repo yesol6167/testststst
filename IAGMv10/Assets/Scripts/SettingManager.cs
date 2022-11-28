@@ -116,6 +116,12 @@ public class SettingManager : MonoBehaviour
         Time.OnPlay();
         NoTouch.SetActive(false);
     }
+
+    public void ClickYes()
+    {
+        Application.Quit();
+    }
+
     void Soundset()
     {
         DetailSettingWindow.GetComponent<SettingWindow>().BGM.volume = PlayerPrefs.GetFloat("volume");

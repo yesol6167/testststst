@@ -410,6 +410,7 @@
 "Assets/Scripts/Test.cs"
 "Assets/Scripts/TitleScreen/TitleManager.cs"
 "Assets/Scripts/Tutorial/Tutorial/Dialogues.cs"
+"Assets/Scripts/Tutorial/Tutorial/FadeOut.cs"
 "Assets/Scripts/Tutorial/Tutorial/Tutorial1Dialogue.cs"
 "Assets/Scripts/Tutorial/Tutorial/TutorialMessage.cs"
 "Assets/Scripts/Tutorial/Tutorial2/Mask.cs"

@@ -14,12 +14,6 @@ public class Playlist : MonoBehaviour
     {
         PlayMusic();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        /*audiosource.volume = PlayerPrefs.GetFloat("volume");*/
-    }
     public void PlayMusic()
     {
         if (audiosource.isPlaying)

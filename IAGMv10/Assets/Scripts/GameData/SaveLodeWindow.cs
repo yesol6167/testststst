@@ -25,9 +25,9 @@ public class SaveLodeWindow : MonoBehaviour
         {
             if (File.Exists(Path.Combine(Application.dataPath, "Save", $"Save{i}.bin"))) // 슬롯들에 저장된 이름들 불러오기
             {
-                DataManager.Inst.SlotNum = i;
+                DataManager.Instance.SlotNum = i;
                 SaveData save = new SaveData();
-                save = DataManager.Inst.Load();
+                save = DataManager.Instance.Load();
                 SeasonTextSet(save);
                 Slots[i].text = $"{SeasonText}-{save.Month}월-{save.Day}일"; ;
             }
@@ -35,7 +35,7 @@ public class SaveLodeWindow : MonoBehaviour
     }
     public void SelectSlot(int slotnum)
     {
-        DataManager.Inst.SlotNum = slotnum;
+        DataManager.Instance.SlotNum = slotnum;
         SelectedSlot = Slots[slotnum];
         for (int i = 0; i < 3; i++)
         {
@@ -55,15 +55,15 @@ public class SaveLodeWindow : MonoBehaviour
         SaveData save = new SaveData();
         Game_to_Data(save); // 게임의 정보를 데이터로 저장
         SeasonTextSet(save); // 계절에 맞는 단어 선택
-        Slots[DataManager.Inst.SlotNum].text = $"{SeasonText}-{save.Month}월-{save.Day}일";
+        Slots[DataManager.Instance.SlotNum].text = $"{SeasonText}-{save.Month}월-{save.Day}일";
 
-        DataManager.Inst.Save(save);
+        DataManager.Instance.Save(save);
     }
 
     public void LoadButton()
     {
-        DataManager.Inst.Save_pathLoad();
-        SceneChangeManager.Inst.ChangeScene("Main");
+        DataManager.Instance.Save_pathLoad();
+        SceneChangeManager.Instance.ChangeScene("Main");
     }
 
     public void Game_to_Data(SaveData save) // 게임의 정보를 데이터로 저장

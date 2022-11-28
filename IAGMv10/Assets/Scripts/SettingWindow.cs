@@ -24,12 +24,6 @@ public class SettingWindow : MonoBehaviour, IBeginDragHandler, IDragHandler
         orgPos = transform.localPosition;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void bgmMute()
     {
         if (BGMMute.isOn)

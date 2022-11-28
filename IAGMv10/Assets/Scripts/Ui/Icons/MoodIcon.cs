@@ -8,12 +8,6 @@ public class MoodIcon : MonoBehaviour // 스마일 + 앵그리 아이콘
     float MoodTime = 1.5f; // 보여지는 시간
     float time = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
