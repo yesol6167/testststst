@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class TutorialMessage : MonoBehaviour
 {
+
     public AudioSource myAudioSource;
     public AudioClip[] SoundClips;
 
@@ -15,9 +16,10 @@ public class TutorialMessage : MonoBehaviour
     public Image TutorialBG;
     public GameObject EyeOpenScene;
     public Animator EyeMask;
+    public GameObject Tutorial;
     public GameObject NextIcon;
     public GameObject Dialogue;
-    public float typing_Speed = 0.15f;
+    public float typing_Speed = 0.2f;
     public string Tu_typing = "아이고 힘들다.. 오늘도 야근이네";
     public string Tu2_typing = "여기가 어디지..? 차에 치였던것 같은데.. 병원인가?";
 
@@ -52,15 +54,15 @@ public class TutorialMessage : MonoBehaviour
             case STATE.CreateScene:
                 break;
             case STATE.Scene1:
-                TutorialBG.gameObject.SetActive(true);
+                Tutorial.SetActive(true);
                 EyeOpenScene.SetActive(false);
                 StartCoroutine(_typing());
                 break;
             case STATE.Scene2:
                 PlaySound(2);
-                StartCoroutine(Accident(Tu2_txt, Tu2_typing, typing_Speed));
-                TutorialBG.gameObject.SetActive(false);
+                Tutorial.SetActive(false);
                 EyeOpenScene.SetActive(true);
+                StartCoroutine(Accident(Tu2_txt, Tu2_typing, typing_Speed));
                 break;
             case STATE.Scene3:
                 NextIcon.SetActive(true);
@@ -109,8 +111,9 @@ public class TutorialMessage : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.5f);
         for (int i = 0; i <= Tu_typing.Length; ++i)
         {
+            Tu_txt.GetComponent<AudioSource>().Play();
             Tu_txt.text = Tu_typing.Substring(0, i);
-            yield return new WaitForSecondsRealtime(0.15f);
+            yield return new WaitForSecondsRealtime(0.2f);
         }
         yield return new WaitForSecondsRealtime(2.0f);
         Tu_txt.text = " ";
@@ -123,8 +126,9 @@ public class TutorialMessage : MonoBehaviour
 
     IEnumerator Accident(TMP_Text typingText, string message, float speed)
     {
-       for (int i = 0; i<message.Length; i++)
+       for (int i = 0; i < message.Length; i++)
         {
+            typingText.GetComponent<AudioSource>().Play();
             typingText.text = message.Substring(0, i + 1);
             yield return new WaitForSecondsRealtime(speed);
         }

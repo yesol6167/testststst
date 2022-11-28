@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -11,6 +12,8 @@ public class TutorialManager : MonoBehaviour
     public GameObject[] tutorialDialogues;
     public GameObject Mask;
     public bool isTutorialEnd = false;
+    //public QuestWindow QuestBtnChk;
+    public GameObject ReQuestWindow;
     public GameObject IconArea;
     public GameObject Notouch;
     public Button MenuIcon;
@@ -18,46 +21,82 @@ public class TutorialManager : MonoBehaviour
     public Animator CamManager;
     public bool QuestChk = true;
     public GameObject FadeOut;
+    public GameObject WindowArea;
+    public GameObject ADMonsterZone;
+    public GameObject ADFarmZone;
 
     void Start()
     {
         StartCoroutine(starttutorial());
+        Notouch.SetActive(true);
     }
 
     IEnumerator starttutorial()
     {
         Time.timeScale = 0.0f;
         yield return new WaitWhile(() => tutorialDialogues[0].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[0].GetComponent<Tutorial2Dialogue>().dialogue.Length); // dialogue1 대화 종료시 다음꺼 실행
-        Time.timeScale = 1.0f;
         yield return new WaitForSeconds(1.0f);
         SpawnNpc("VL");//마을사람 생성
-        Notouch.SetActive(true);
+        //Notouch.SetActive(true);
         yield return new WaitForSeconds(5.8f);
+        
         tutorialDialogues[1].SetActive(true);
         Time.timeScale = 0.0f;
         yield return new WaitWhile(() => tutorialDialogues[1].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[1].GetComponent<Tutorial2Dialogue>().dialogue.Length); //dialogue2 대화 종료시 다음꺼 실행
-        IconArea.GetComponentInChildren<ClockIcon>().myButton.onClick.AddListener(C_ClockIcon);
-        Time.timeScale = 1.0f;
+        Notouch.SetActive(false); //
+        //IconArea.GetComponentInChildren<ClockIcon>().myButton.onClick.AddListener(C_ClockIcon);
+        IconArea.GetComponentInChildren<ClockIcon>().myButton.onClick.AddListener(ClockIconNoTouch);
+
+        yield return new WaitWhile(() => tutorialDialogues[2].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[2].GetComponent<Tutorial2Dialogue>().dialogue.Length);
+        Time.timeScale = 0.0f;
+        Notouch.SetActive(false);// 추가
+
         yield return new WaitWhile(() => QuestManager.Instance.RQlist.Count < 1);
         Time.timeScale = 0.0f;
+        
         tutorialDialogues[3].SetActive(true);
+        Notouch.SetActive(false);
         MenuIcon.onClick.AddListener(C_MenuIcon);
+        //yield return new WaitWhile(() => QuestBtnChk.tutorialchk < 1);
         yield return new WaitWhile(() => tutorialDialogues[4].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[4].GetComponent<Tutorial2Dialogue>().dialogue.Length);
-        Time.timeScale = 1.0f;
         yield return new WaitForSeconds(8.0f);
         //모험가 생성
         SpawnNpc("Q_AD");
         yield return new WaitForSeconds(6.5f);
         Time.timeScale = 0.0f;
+       
         tutorialDialogues[5].SetActive(true);
-        yield return new WaitWhile(() => tutorialDialogues[5].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[5].GetComponent<Tutorial2Dialogue>().dialogue.Length);
-        Time.timeScale = 1.0f;
-        yield return new WaitForSeconds(9.0f); // 모험가 퇴장 -> 전투하러 나갔을 때
+        Notouch.SetActive(true);
+        yield return new WaitWhile(() => tutorialDialogues[5].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[5].GetComponent<Tutorial2Dialogue>().dialogue.Length);       
+        Notouch.SetActive(false);
+
+        //WindowArea.GetComponentInChildren<QuestInformation>().acception.GetComponent<Button>().onClick.AddListener(AcceptionBtn);
+
+
+        yield return new WaitWhile(() => ADFarmZone.transform.childCount < 1);
+        Notouch.SetActive(false);
+        Time.timeScale = 0.0f;
         Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
+        tutorialDialogues[6].SetActive(true);
+
+        yield return new WaitWhile(() => ADMonsterZone.transform.childCount < 1);
+        Notouch.SetActive(false);
+        Time.timeScale = 0.0f;
+        Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
+        tutorialDialogues[6].SetActive(true);
+        //yield return new WaitForSeconds(9.0f); // 모험가 퇴장 -> 전투하러 나갔을 때
+        /*Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
         Time.timeScale = 0.0f;
         yield return new WaitForSecondsRealtime(1.5f); // 마스크 이동
-        tutorialDialogues[6].SetActive(true);
+        
+        tutorialDialogues[6].SetActive(true);*/
+
+
+
+
+
         yield return new WaitWhile(() => tutorialDialogues[6].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[6].GetComponent<Tutorial2Dialogue>().dialogue.Length); //dialogue7 대화 종료시 다음꺼 실행
+        Notouch.SetActive(false);
         PQ_Content.GetChild(0).gameObject.GetComponent<Button>().onClick.AddListener(Mask_AD);
         yield return new WaitWhile(() => tutorialDialogues[7].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[7].GetComponent<Tutorial2Dialogue>().dialogue.Length);
         Time.timeScale = 0.0f;
@@ -68,10 +107,10 @@ public class TutorialManager : MonoBehaviour
         Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
         yield return new WaitWhile(() => SpawnManager.Instance.spawnPoints[0].transform.childCount != 0);
         Time.timeScale = 0.0f;
+        
         tutorialDialogues[9].SetActive(true);
         yield return new WaitWhile(() => tutorialDialogues[9].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[9].GetComponent<Tutorial2Dialogue>().dialogue.Length);
         Mask.SetActive(false);
-        Time.timeScale = 1.0f;
         yield return new WaitForSeconds(1.0f);
         SpawnNpc("P_AD"); //펍 모험가 생성
         yield return new WaitForSeconds(7.0f);
@@ -80,32 +119,51 @@ public class TutorialManager : MonoBehaviour
         Mask.GetComponent<Animator>().SetTrigger("M_AD");
         Mask.SetActive(true);
         yield return new WaitForSecondsRealtime(1.5f);
+        
         tutorialDialogues[10].SetActive(true);
         yield return new WaitWhile(() => tutorialDialogues[10].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[10].GetComponent<Tutorial2Dialogue>().dialogue.Length);
-        Time.timeScale = 1.0f;
         yield return new WaitForSeconds(9.0f);
+        
         tutorialDialogues[11].SetActive(true);
         yield return new WaitWhile(() => tutorialDialogues[11].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[11].GetComponent<Tutorial2Dialogue>().dialogue.Length);
         CamManager.SetTrigger("MotelCam");
         SpawnNpc("M_AD"); //모텔 모험가 생성
         yield return new WaitForSeconds(17.0f); 
+        
         tutorialDialogues[12].SetActive(true);
         yield return new WaitWhile(() => tutorialDialogues[12].GetComponent<Tutorial2Dialogue>().count <= tutorialDialogues[12].GetComponent<Tutorial2Dialogue>().dialogue.Length);
         Mask.SetActive(false);
         CamManager.SetTrigger("LobbyCam");
         yield return new WaitForSecondsRealtime(1.5f);
         FadeOut.SetActive(true);
-        StartCoroutine(FadeOutAnim());
     }
 
     public void C_ClockIcon()
     {
-        StartCoroutine(CoNextTalk(2.5f, 2));
-    }
+        StartCoroutine(CoNextTalk(0.0f, 2));
 
-    public void C_MenuIcon()
+    }
+    public void AcceptionBtn()
+    {
+        Invoke("Dialogue6", 5.8f);
+    }
+    public void Dialogue6()
     {
         Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
+        Time.timeScale = 0.0f;
+        tutorialDialogues[6].SetActive(true);
+    }
+    public void ClockIconNoTouch()
+    {
+        Notouch.SetActive(true);
+        Time.timeScale = 1.0f;
+        StartCoroutine(CoNextTalk(1.0f,2));
+    }
+    public void C_MenuIcon()
+    {
+        Notouch.SetActive(true);
+        Mask.GetComponent<Animator>().SetTrigger("M_QuestList");
+       
         StartCoroutine(CoNextTalk(2.0f, 4));
     }
 
@@ -163,21 +221,11 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator CoNextTalk(float time,int D_num)
     {
-        Notouch.SetActive(true);
+        //Notouch.SetActive(true);
         yield return new WaitForSecondsRealtime(time);
         tutorialDialogues[D_num].SetActive(true);
+       
     }
 
-    IEnumerator FadeOutAnim()
-    {
-        while (FadeOut.GetComponent<Image>().fillAmount < 1.0f)
-        {
-            FadeOut.GetComponent<Image>().fillAmount += 0.5f * Time.deltaTime;
-            if (FadeOut.GetComponent<Image>().fillAmount == 1.0f)
-            {
-                SceneChangeManager.Inst.ChangeScene("Main");
-            }
-            yield return null;
-        }
-    }
+
 }

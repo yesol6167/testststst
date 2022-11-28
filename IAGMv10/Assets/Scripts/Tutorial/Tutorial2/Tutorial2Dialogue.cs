@@ -19,7 +19,7 @@ public class Tutorial2Dialogue : MonoBehaviour
     [SerializeField] public Image chara;
     [SerializeField] public GameObject Me;
     public GameObject NextBtn;
-    public GameObject NoTouch;
+    //public GameObject NoTouch;
     public TutorialManager T_Manager;
     public Animator Mask;
 
@@ -31,6 +31,7 @@ public class Tutorial2Dialogue : MonoBehaviour
     void Start()
     {
         ShowDialogue();
+        
     }
 
     public void ShowDialogue()
@@ -41,8 +42,7 @@ public class Tutorial2Dialogue : MonoBehaviour
 
     IEnumerator NextDialogue()
     {
-
-        NoTouch.SetActive(true);
+        //NoTouch.SetActive(true);
         TalkEnd = true;
         chara.sprite = dialogue[count].cg;
         Charname.text = dialogue[count].name;
@@ -53,8 +53,7 @@ public class Tutorial2Dialogue : MonoBehaviour
         }
         count++;
         TalkEnd = false;
-        NoTouch.SetActive(false);
-
+        //NoTouch.SetActive(false);
     }
 
     private void ImmediatelyShow()
@@ -65,7 +64,7 @@ public class Tutorial2Dialogue : MonoBehaviour
         count++;
 
         TalkEnd = false;
-        NoTouch.SetActive(false);
+        //NoTouch.SetActive(false);
     }
 
     private void HideDialogue()
@@ -100,6 +99,7 @@ public class Tutorial2Dialogue : MonoBehaviour
                 {
                     HideDialogue();
                     count++;
+                    Time.timeScale = 1.0f;
                 }
             }
             else if (TalkEnd == true)
@@ -127,6 +127,12 @@ public class Tutorial2Dialogue : MonoBehaviour
                 {
                     HideDialogue();
                     count++;
+                    Time.timeScale = 1.0f;
+                    //if (T_Manager.tutorialDialogues[3] )
+                    //{
+                    //    Time.timeScale = 0.0f;
+                    //}
+
                 }
             }
         }

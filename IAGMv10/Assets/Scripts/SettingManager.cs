@@ -27,7 +27,7 @@ public class SettingManager : MonoBehaviour
             ReCheckWindow.SetActive(false);
             DetailSettingWindow.GetComponent<SettingWindow>().BGMvolume.value = PlayerPrefs.GetFloat("volume");
             DetailSettingWindow.GetComponent<SettingWindow>().BGM.volume = PlayerPrefs.GetFloat("volume");
-            DetailSettingWindow.GetComponent<SettingWindow>().Effvolume.value = PlayerPrefs.GetFloat("eff");
+            //DetailSettingWindow.GetComponent<SettingWindow>().Effvolume.value = PlayerPrefs.GetFloat("eff");
             foreach (AudioSource source in DetailSettingWindow.GetComponent<SettingWindow>().Eff)
             {
                 source.volume = PlayerPrefs.GetFloat("eff");
