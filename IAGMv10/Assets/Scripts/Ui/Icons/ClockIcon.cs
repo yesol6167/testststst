@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
+//using static UnityEditor.PlayerSettings;
 
 public class ClockIcon : MonoBehaviour
 {
@@ -23,6 +23,8 @@ public class ClockIcon : MonoBehaviour
 
     public Image myTimeArea;
     public float LimitTime = 30.0f; // 제한시간 30초
+
+    public AudioSource NotouchSound;
 
     // Start is called before the first frame update
     void Start()
@@ -56,8 +58,10 @@ public class ClockIcon : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
     public void OnIcon() 
     {
+        //GameManager.Instance.GetComponent<AudioSource>().Play();
         switch(myHost.GetComponent<Host>().purpose)
         {
             case 0: // 방문 목적이 로비일때
@@ -75,5 +79,10 @@ public class ClockIcon : MonoBehaviour
     {
         deStaffIcon = myHost.GetComponent<Host>().myStaff.GetComponent<Staff>().OnSmileIcon;
         deStaffIcon();
+    }
+
+    public void NoTouchSound()
+    {
+        NotouchSound.Play();
     }
 }

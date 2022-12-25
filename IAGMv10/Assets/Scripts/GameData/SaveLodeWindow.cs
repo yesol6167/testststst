@@ -63,7 +63,7 @@ public class SaveLodeWindow : MonoBehaviour
     public void LoadButton()
     {
         DataManager.Instance.Save_pathLoad();
-        SceneManager.LoadScene(1);
+        SceneChangeManager.Instance.ChangeScene("Main");
     }
 
     public void Game_to_Data(SaveData save) // 게임의 정보를 데이터로 저장

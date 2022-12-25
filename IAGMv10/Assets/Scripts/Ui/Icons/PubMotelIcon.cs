@@ -43,14 +43,14 @@ public class PubMotelIcon : MonoBehaviour // Bed + Meat + Sleep + Eat 아이콘
 
     public void AddGold()
     {
-        GameManager.Instance.ChangeGold(Price);
+        //DataManager.Instance.GetComponent<AudioSource>().Play();
+        if (!Pullchk) GameManager.Instance.ChangeGold(Price);
     }
 
     public void ChairChk()
     {
         bedchairvalue = FindObjectOfType<ChairBedChk>();
 
-        
         for(int i = 0; i < bedchairvalue.chairSlot.Count; i++)
         { 
             if(bedchairvalue.chairSlot[i] == ChairBedChk.ChairSlot.Check) // 자리가 전부 꽉 찼을 때

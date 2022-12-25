@@ -5,11 +5,13 @@ using UnityEngine;
 public class TimeManager : Singleton<TimeManager>
 {
     public int timeSpeed = 1; // 2는 2배로 빠르게
+    public float DeadLine = 555.0f;
     public int OneDay = 30;
-
     public int DayCount = 1;
     public int MonthCount = 1;
     public int SeasonCount = 1;
+
+    public bool clockSound = false;
     // 날짜 설정 가능 단, 각 계절의 시작일만 설정 가능 ex) 봄(1) 3월 1일 / 여름(2) 6월 1일 / 가을(3) 9월 1일 / 겨울(4) 12월 1일
 
     // 시계 회전
@@ -200,11 +202,13 @@ public class TimeManager : Singleton<TimeManager>
     {
         Time.timeScale = 0;
         CloseNotice.SetActive(false);
+        clockSound = false;
         DayReportWindow.SetActive(true);
     }
 
     public void OnCloseReady()
     {
+        clockSound = true;
         CloseNotice.SetActive(true);
     }
 }

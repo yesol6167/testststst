@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Diagnostics;
+using UnityEngine.SceneManagement;
 
 public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트 요청서와 같이 사용됨
 {
@@ -30,7 +31,23 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
 
     public void Start()
     {
-        WindowArea = UIManager.Inst.WindowArea;
+            WindowArea = GameObject.Find("WindowArea");
+            //UI매니저
+            if (NpcChk == false) // Ui프리팹일 경우
+            {
+                ParentOBJ = GameObject.Find("SpawnPointQ");
+                ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+            }
+            else // 모험가일 경우
+            {
+                if (this.gameObject.GetComponent<Host>().purpose == 0) // 방문목적이 로비인 경우
+                {
+                    ParentOBJ = GameObject.Find("SpawnPointQ");
+                    ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
+                }
+            }
+            NewsBArea = GameObject.Find("NewsBArea");
+        /*WindowArea = UIManager.Inst.WindowArea;
         //UI매니저
         if(NpcChk == false || this.gameObject.GetComponent<Host>().purpose == 0) // Ui프리팹일 경우
         {
@@ -40,7 +57,7 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
                 ChildOBJ = ParentOBJ.transform.GetChild(0).gameObject;
             }
         }
-        NewsBArea = UIManager.Inst.NewsBArea;
+        NewsBArea = UIManager.Inst.NewsBArea;*/
 
     }
     public void ShowQuest(Quest.QuestInfo npc, GameObject host)
@@ -59,6 +76,11 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
             {
                 chk = false;
             }
+            Scene scene = SceneManager.GetActiveScene();
+            if (scene.name == "Tutorial2")
+            {
+                chk = true;
+            }
             //보고서 용
             Result.text = chk ? "[성공]" : "[실패]"; // 성공 실패 여부 체크후 변경
         }
@@ -73,7 +95,8 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
 
     public void AddQuest() // 승낙
     {
-        if (SpawnManager.Instance.EndTime < SpawnManager.Instance.DeadLine)
+        GameManager.Instance.GetComponent<AudioSource>().Play();
+        if (SpawnManager.Instance.EndTime < TimeManager.Instance.DeadLine)
         {
             if (People == 0) // 마을사람
             {
@@ -112,6 +135,7 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
 
     public void onQuestRfuse()
     {
+        GameManager.Instance.GetComponent<AudioSource>().Play();
         ChildOBJ.GetComponent<Host>().onAngry = true;
         if(People != 0)
         {
@@ -127,6 +151,7 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
         QuestManager.Instance.EndQuest(myQuest);
         if (chk)
         { // 성공시 증가 연산
+            //DataManager.Instance.GetComponent<AudioSource>().Play();
             GameManager.Instance.ChangeGold(myQuest.rewardgold);
             GameManager.Instance.ChangeFame(myQuest.rewardfame);
             ChildOBJ.GetComponent<Host>().onSmile = true;
@@ -134,7 +159,10 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
         else
         { // 실패시 감소 연산
             GameManager.Instance.ChangeGold(-myQuest.rewardgold);
-            GameManager.Instance.ChangeFame(-myQuest.rewardfame);
+            if (SpawnManager.Instance.EndTime >= TimeManager.Instance.DeadLine)
+            {
+                GameManager.Instance.ChangeFame(-myQuest.rewardfame); // 마감시간에 퀘스트 실패하고 돌아왔는데 명성이 안까임 - 종찬(임시로 고침)
+            }
             ChildOBJ.GetComponent<Host>().onAngry = true;
         }
         //현재 퀘스트 리스트를 완료 퀘스트 리스트에 추가
@@ -148,6 +176,7 @@ public class QuestInformation : MonoBehaviour // 해당 스크립트는 모험가와 퀘스트
     }*/
     public void onAdDataWindow() // 모험가 정보창 띄우기
     {
+        GameManager.Instance.GetComponent<AudioSource>().Play();
         if (ADW == null)
         {
             GameObject obj = Instantiate(Resources.Load("UiPrefabs/AdDataWindow"), WindowArea.transform) as GameObject;

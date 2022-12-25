@@ -64,10 +64,4 @@ public class MonsterStat : MonoBehaviour
         GetComponent<Monster>().myStat.HP = myStat.MaxHp;
         GetComponent<Monster>().myStat.AP = myStat.AP;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

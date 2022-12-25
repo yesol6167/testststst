@@ -45,9 +45,4 @@ public class ChairBedChk : MonoBehaviour
         get { return _bedSlot; }
         set { _bedSlot = value; }
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 }

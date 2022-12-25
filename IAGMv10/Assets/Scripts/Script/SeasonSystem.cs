@@ -2,7 +2,6 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.UIElements;
 using UnityEngine;
 
 public class SeasonSystem : MonoBehaviour
@@ -15,13 +14,6 @@ public class SeasonSystem : MonoBehaviour
     public GameObject Fall;
     public GameObject Winter;
 
-    // Start is called before the first frame update
-    void Start() // 초기 설정 봄으로
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
         time += Time.deltaTime;

@@ -155,6 +155,9 @@ MonoBehaviour:
     QuestName: 
     Questgrade: 0
     Information: 
+    Rewards:
+      Gold: 0
+      Fame: 0
   Questname: {fileID: 591281890640150074}
   grade: {fileID: 0}
   Name: {fileID: 0}

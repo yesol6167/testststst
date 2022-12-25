@@ -7,38 +7,24 @@ using UnityEngine.UI;
 
 public class MainBoard : MonoBehaviour
 {
-    public GameObject[] MenuBoard;
-    public Sprite myCloseBook;
-    public Sprite myOpenBook;
-    public Button MenuButton;
     bool Active = false;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        gameObject.GetComponent<Image>().sprite = myCloseBook;
-        for(int i = 0; i < MenuBoard.Length; i++)
-        {
-            MenuBoard[i].SetActive(Active);
-        }
-    }
+    public GameObject QuestListWindow;
     public void OnAction()
     {
-        for (int i = 0; i < MenuBoard.Length; i++)
-        {
-            MenuBoard[i].SetActive(!Active);
-        }
         Active = !Active;
 
         if(Active)
         {
-            gameObject.GetComponent<Image>().sprite = myOpenBook;
+            QuestListWindow.SetActive(true);
         }
         else 
         {
-            gameObject.GetComponent<Image>().sprite = myCloseBook;
+            QuestListWindow.SetActive(false);
         }
+    }
+    public void ExitBtn()
+    {
+        QuestListWindow.SetActive(false);
     }
   }
    

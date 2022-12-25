@@ -257,6 +257,10 @@ public class Monster : MonoBehaviour, IBattle
     public void OnDamage(float dmg)
     {
         myStat.HP -= dmg;
+        /*while (OnDamage(true))
+        {
+            myTarget.GetComponent<Host>().AttackSound.Play();
+        }*/
         if (Mathf.Approximately(myStat.HP, 0.0f))
         {
             ChangeState(STATE.Dead);

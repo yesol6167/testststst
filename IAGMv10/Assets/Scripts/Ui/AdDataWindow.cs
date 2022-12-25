@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
 using static ADNpc;
@@ -34,6 +33,7 @@ public class AdDataWindow : MonoBehaviour
 
     public void RemoveWinndow() // X버튼 누르면 창 닫기
     {
+        GameManager.Instance.GetComponent<AudioSource>().Play();
         Destroy(gameObject);
     }
 }

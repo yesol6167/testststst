@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DataManager : Singleton<DataManager>
 {
@@ -11,7 +12,7 @@ public class DataManager : Singleton<DataManager>
     public string pathSave;
     public string pathLoad;
 
-    void Awake()
+    private void Awake()
     {
         pathSave = Path.Combine(Application.dataPath, "Save", "Save");
         pathLoad = Path.Combine(Application.dataPath, "Load", "Load.bin");
@@ -19,15 +20,17 @@ public class DataManager : Singleton<DataManager>
 
     private void Start()
     {
-        if (File.Exists(pathLoad))// 로드 
+        Scene scene = SceneManager.GetActiveScene();
+
+        if(scene.name == "Main")
         {
-            SaveData save = Load_pathLoad();
-            Data_to_Game(save); // [LODE] 데이터를 게임에 적용
+            if (File.Exists(pathLoad))// 로드 
+            {
+                SaveData save = Load_pathLoad();
+                Data_to_Game(save); // [LODE] 데이터를 게임에 적용
+            }
         }
     }
-
-
-    
 
     public void Save(SaveData data)
     {
@@ -81,9 +84,14 @@ public class DataManager : Singleton<DataManager>
     {
         GameManager.Instance.Gold = save.Gold;
         GameManager.Instance.Fame = save.Fame;
-        TimeManager.Instance.DayCount = save.Day;
-        TimeManager.Instance.MonthCount = save.Month;
-        TimeManager.Instance.SeasonCount = save.Season;
+
+        Scene scene = SceneManager.GetActiveScene();
+        if(scene.name == "Main")
+        {
+            TimeManager.Instance.DayCount = save.Day;
+            TimeManager.Instance.MonthCount = save.Month;
+            TimeManager.Instance.SeasonCount = save.Season;
+        }
 
         ExtendLoad(save);
         RQListLoad(save);

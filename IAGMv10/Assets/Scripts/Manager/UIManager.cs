@@ -21,7 +21,10 @@ public class UIManager : MonoBehaviour
    
     public GameObject GoldIncrease; // 골드의 증감
     public GameObject FameIncrease; // 명성의 증감
+
     public GameObject NoticeWindow;
+    public GameObject QuestListWindow;
+
 
     //QuestInfo에서 옮김
     //바인딩
@@ -58,6 +61,7 @@ public class UIManager : MonoBehaviour
             }
         }
     }
+
 
     private void Awake()
     {
@@ -123,5 +127,10 @@ public class UIManager : MonoBehaviour
             FameIncrease.GetComponent<TMP_Text>().text = $"<color=blue>{Price}";
         }
         FameIncrease.SetActive(true);
+    }
+
+    public void OnQLWindow()
+    {
+        QuestListWindow.SetActive(true);
     }
 }
